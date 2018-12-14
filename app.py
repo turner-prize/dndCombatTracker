@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template, request
 from diceroll import RollDice
+import itertools
 app = Flask(__name__)
 
 @app.route('/_add_numbers')
@@ -17,7 +18,12 @@ def roll_dice():
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+
+    testInitiative = ['goblin1','globin2','kaladin','baldor','goblin3']
+
+    initiative=itertools.cycle(testInitiative)
+
+    return render_template('index.html',xlist=testInitiative,currentinit=next(initiative))
 if __name__ == '__main__':
 	# run!
 	app.run(debug=True)
