@@ -3,6 +3,13 @@ from diceroll import RollDice
 import itertools
 app = Flask(__name__)
 
+
+
+testInitiative = ['goblin1','globin2','kaladin','baldor','goblin3']
+
+initiative=itertools.cycle(testInitiative)
+
+
 @app.route('/_add_numbers')
 def add_numbers():
     a = request.args.get('a', 0, type=int)
@@ -16,12 +23,12 @@ def roll_dice():
     roll = RollDice(dice)
     return jsonify(result=roll)
 
+@app.route('/_next_initiative')
+def next_initiative():
+    return render_template('index.html',xlist=testInitiative,currentinit=next(initiative))
+
 @app.route('/')
 def index():
-
-    testInitiative = ['goblin1','globin2','kaladin','baldor','goblin3']
-
-    initiative=itertools.cycle(testInitiative)
 
     return render_template('index.html',xlist=testInitiative,currentinit=next(initiative))
 if __name__ == '__main__':

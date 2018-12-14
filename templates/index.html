@@ -5,15 +5,26 @@
 <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
 </script>
+<script>
+  $(document).ready( function() {
+      $('#next').click(function() {
+         $.ajax("{{ url_for('next_initiative') }}").done(function (reply) {
+            $('#container').html(reply);
+         });
+      });
+  });
+</script>
 
 
 {% for item in xlist %}
-  {% if item = currentinit %}
-    <ul><b>{{ item }}</b></ul>
+  {% if item == currentinit %}
+    <div id="container"><ul><b>{{ item }}</b></ul></div>
     {% else %}
     <ul>{{ item }}</ul>
     {% endif %}
 {% endfor %}
 
+<h1>Next Initiative</h1>
+<p><button href=# id=next>calculate server side</a>
 
  </body>
