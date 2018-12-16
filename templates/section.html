@@ -1,9 +1,20 @@
-  <div id="mylist" class="default list">
-    {% for item in mylist %}
-      {% if item == nextitem %}
-        <ul id=nextitem value="{{ nextitem }}"><b>{{ nextitem }}</b></ul>
+<div id="update" class="updated bit">
+    <div id="mylist" class="default list">
+      {% for item in mylist %}
+        {% if item == nextitem %}
+        <ul id=nextitem><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
           {% else %}
-        <ul id=item value="{{ item }}">{{ item }}</ul>
-      {% endif %}
-    {% endfor %}
+          <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
+        {% endif %}
+      {% endfor %}
     </div>
+
+    <div id="weaponSelect" class="default list">
+        <select size=3>
+            {% for w in nextitem.weapons %}
+            <option id=nextitem>{{ w.name }}</option>
+            {% endfor %}
+        </select>
+      </div>
+    
+</div>

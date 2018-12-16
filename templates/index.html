@@ -1,8 +1,9 @@
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-  <title>Member List</title>
+  <title>DND!!!!</title>
   <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
 </head>
 
     <body>
@@ -10,30 +11,46 @@
           $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
       </script>
       
-      <div class="initiative-list-container">
-        <p><button class="btn nextItem">Next Item</button>
-          <div id="mylist" class="default list">
-          {% for item in mylist %}
-            {% if item == nextitem %}
-              <ul id=nextitem value="{{ nextitem }}"><b>{{ nextitem }}</b></ul>
-                {% else %}
-              <ul id=item value="{{ item }}">{{ item }}</ul>
-            {% endif %}
-          {% endfor %}
+      
+          <div id="update" class="updated bit">
+              <div id="mylist" class="default list">
+                {% for item in mylist %}
+                  {% if item == nextitem %}
+                  <ul id=nextitem><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+                    {% else %}
+                    <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+              <div id="weaponSelect" class="default list">
+                  <select size=3>
+                      {% for w in nextitem.weapons %}
+                      <option id=nextitem>{{ w.name }}</option>
+                      {% endfor %}
+                  </select>
+                </div>
+              
           </div>
-      </div>
+
 
       <div class="target-selection-container">
-          <div id="selection list" class="select list">
+          <div id="selectionList" class="select list">
             <select size=5>
-          {% for item in mylist %}
-              <option value="{{ item }}">{{ item }}</option>
+              {% for item in mylist %}
+              <option value="{{ item }}">{{ item.name }}</option>
               {% endfor %}
             </select>
         </div>
       </div>
 
+      <footer>
+      <p><button class="btn nextItem" id="nextButton">Next Item</button>
+      <p><button class="btn attacl" id="attackButton">attack</button>
+      </footer>
+
       <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/next.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/attack.js') }}"></script>
 </body>
 </html>

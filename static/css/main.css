@@ -1,0 +1,36 @@
+#mylist {
+    float: left;
+    padding: 20px;
+    width:10%;
+    background-color: #f1f1f1;
+    height: 100px; /* only for demonstration, should be removed */
+  }
+
+  #weaponSelect {
+    float: left;
+    padding: 20px;
+    width: 5%;
+    background-color: #f1f1f1;
+    height: 100px; /* only for demonstration, should be removed */
+  }
+
+  #selectionList {
+    float: left;
+    padding: 20px;
+    width: 5%;
+    background-color: #f1f1f1;
+    height: 100px; /* only for demonstration, should be removed */
+  }
+
+#nextButton{
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
