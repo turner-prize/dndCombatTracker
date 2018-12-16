@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 import itertools
 from enemies import Enemy
+import json
 app = Flask(__name__)
 
 weapons =   [{'name':'Scimitar','type':'Melee','attackBonus':'+4','range':'5 ft.','targetMax':1,'damage':'1d6+2','damageType':'slashing'},
@@ -14,12 +15,16 @@ Goblin2=Enemy('goblin2','small','humanoid(goblinoid)','neutral evil',15,'2d6','3
 Goblin3=Enemy('goblin3','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=weapons2)
 
 mylist = [Goblin1,Goblin2,Goblin3]
+refdict = {i.name:i for i in mylist}
+    
 mylist.sort(key=lambda x: int(x.initiative), reverse=True)
 x = itertools.cycle(mylist)
 
-@app.route('/attack')
+@app.route('/attack', methods=['POST'])
 def attack(): 
-	return render_template('section.html',mylist=mylist,nextitem=next(x))
+    attacker = request.form['attacker']
+    print(attacker)
+    return render_template('section.html',mylist=mylist,nextitem=next(x))
 
 @app.route('/nextItem')
 def nextItem(): 
