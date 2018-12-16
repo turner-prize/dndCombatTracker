@@ -1,0 +1,9 @@
+  <div id="mylist" class="default list">
+    {% for item in mylist %}
+      {% if item == nextitem %}
+        <ul id=nextitem value="{{ nextitem }}"><b>{{ nextitem }}</b></ul>
+          {% else %}
+        <ul id=item value="{{ item }}">{{ item }}</ul>
+      {% endif %}
+    {% endfor %}
+    </div>

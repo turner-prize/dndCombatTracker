@@ -1,30 +1,39 @@
+<!DOCTYPE HTML>
+<html lang="en">
 <head>
-<script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
+  <title>Member List</title>
+  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
 </head>
-<body>
-<script type=text/javascript>
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-</script>
-<script>
-  $(document).ready( function() {
-      $('#next').click(function() {
-         $.ajax("{{ url_for('next_initiative') }}").done(function (reply) {
-            $('#container').html(reply);
-         });
-      });
-  });
-</script>
 
+    <body>
+      <script type=text/javascript>
+          $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      </script>
+      
+      <div class="initiative-list-container">
+        <p><button class="btn nextItem">Next Item</button>
+          <div id="mylist" class="default list">
+          {% for item in mylist %}
+            {% if item == nextitem %}
+              <ul id=nextitem value="{{ nextitem }}"><b>{{ nextitem }}</b></ul>
+                {% else %}
+              <ul id=item value="{{ item }}">{{ item }}</ul>
+            {% endif %}
+          {% endfor %}
+          </div>
+      </div>
 
-{% for item in xlist %}
-  {% if item == currentinit %}
-    <div id="container"><ul><b>{{ item }}</b></ul></div>
-    {% else %}
-    <ul>{{ item }}</ul>
-    {% endif %}
-{% endfor %}
+      <div class="target-selection-container">
+          <div id="selection list" class="select list">
+            <select size=5>
+          {% for item in mylist %}
+              <option value="{{ item }}">{{ item }}</option>
+              {% endfor %}
+            </select>
+        </div>
+      </div>
 
-<h1>Next Initiative</h1>
-<p><button href=# id=next>calculate server side</a>
-
- </body>
+      <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
