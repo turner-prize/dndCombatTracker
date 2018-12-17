@@ -22,9 +22,27 @@ x = itertools.cycle(mylist)
 
 @app.route('/attack', methods=['POST'])
 def attack(): 
-    attacker = request.form['attacker']
-    print(attacker)
-    return render_template('section.html',mylist=mylist,nextitem=next(x))
+    attacker=refdict[request.form['attacker']]
+    print(attacker.name)
+    for i in attacker.weapons:
+        print(i.name)
+        #if i.name == request.form['weapon']:
+        #    activeweapon=i
+    #target=refdict[request.form['target']]
+    #attacker.Attack(activeweapon,target)
+    return render_template('section.html',mylist=mylist,nextitem=attacker)
+
+@app.route('/attack2', methods=['POST'])
+def attack2(): 
+    attacker=refdict[request.form['attacker']]
+    print(attacker.name)
+    for i in attacker.weapons:
+        print(i.name)
+        #if i.name == request.form['weapon']:
+        #    activeweapon=i
+    #target=refdict[request.form['target']]
+    #attacker.Attack(activeweapon,target)
+    return jsonify(result=100)
 
 @app.route('/nextItem')
 def nextItem(): 

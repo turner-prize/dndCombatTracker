@@ -5,7 +5,7 @@ $(document).ready(function() {
         var attacker = $(this).attr('attacker');
         var weapon = $('#weaponSelect option:selected').val();
         var target = $('#selectionList option:selected').val();
-        var URL ="/attack"
+        var URL ="/attack2"
 
         req = $.ajax({
             url : URL,
