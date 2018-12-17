@@ -34,15 +34,9 @@ def attack():
 
 @app.route('/attack2', methods=['POST'])
 def attack2(): 
-    #attacker=refdict[request.form['attacker']]
-    #print(attacker.name)
-    #for i in attacker.weapons:
-    #    print(i.name)
-        #if i.name == request.form['weapon']:
-        #    activeweapon=i
-    #target=refdict[request.form['target']]
-    #attacker.Attack(activeweapon,target)
-    return jsonify(result=100)
+    attacker=refdict[request.form['attacker']]
+    attacker.UpdateHP(100)
+    return jsonify(result=attacker.hp)
 
 @app.route('/nextItem')
 def nextItem(): 

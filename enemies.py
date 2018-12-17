@@ -53,3 +53,6 @@ class Enemy:
             
     def CurrentWeapon(self, weaponDict):
         self.cWeapon = weaponDict
+
+    def UpdateHP(self, newHP):
+        self.hp = newHP
