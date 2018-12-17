@@ -15,7 +15,7 @@ $(document).ready(function() {
 
         req.done(function(data) {
 
-            $('#result').text(data.result);
+            $('#update').html(data);
 
         });
     });

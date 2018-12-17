@@ -2,7 +2,7 @@
     <div id="mylist" class="default list">
       {% for item in mylist %}
         {% if item == nextitem %}
-        <ul id=nextitem><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+        <ul id=nextitem><b>{{ nextitem.name }} - <span id=result>{{nextitem.hp}}</span>hp - initiative: {{nextitem.initiative}}</b></ul>
           {% else %}
           <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
         {% endif %}

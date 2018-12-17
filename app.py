@@ -34,10 +34,10 @@ def attack():
 
 @app.route('/attack2', methods=['POST'])
 def attack2(): 
-    attacker=refdict[request.form['attacker']]
-    print(attacker.name)
-    for i in attacker.weapons:
-        print(i.name)
+    #attacker=refdict[request.form['attacker']]
+    #print(attacker.name)
+    #for i in attacker.weapons:
+    #    print(i.name)
         #if i.name == request.form['weapon']:
         #    activeweapon=i
     #target=refdict[request.form['target']]
