@@ -12,27 +12,25 @@
       </script>
       
       
-          <div id="update" class="updated bit">
-              <div id="mylist" class="default list">
+          <div id="initiativeOrder" class="updateableHTML">
+              <div id="mylist">
                 {% for item in mylist %}
                   {% if item == nextitem %}
-                  <ul id=nextitem><b>{{ nextitem.name }} - <span id=result>{{nextitem.hp}}</span>hp - initiative: {{nextitem.initiative}}</b></ul>
+                  <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
                     {% else %}
                     <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
                   {% endif %}
                 {% endfor %}
               </div>
 
-              <div id="weaponSelect" class="default list">
+              <div id="weaponSelect">
                   <select size=3>
                       {% for w in nextitem.weapons %}
-                      <option id=nextitem>{{ w.name }}</option>
+                      <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
                       {% endfor %}
                   </select>
                 </div>
           </div>
-
-
 
           <div class="target-selection-container">
               <div id="selectionList" class="select list">
@@ -46,12 +44,11 @@
 
           <footer>
           <p><button class="btn nextItem" id="nextButton">Next Item</button>
-          <p><button class="btn attack" attacker={{ nextitem.name }}>attack</button>
+          <p><button class="btn attack" id=#currentTurn>attack</button>
           </footer>
 
       <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='js/next.js') }}"></script>
-    <!-- <script src="{{ url_for('static', filename='js/attack.js') }}"></script> -->
-    <script src="{{ url_for('static', filename='js/hp.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/attack.js') }}"></script>
 </body>
 </html>

@@ -1,0 +1,36 @@
+
+
+General clean up of all code needed!
+
+Database:
+    must have:
+        as well as holding the data for enemies and heros (player characters), 
+        it needs to have an 'active combat' table to hold the base details for the characters currently in combat.
+        This can just hold the base details like name, initiative, hp and ac (maybe max hp to show bloodied?)
+        New combatants added to the combat should have auto incrementing numbers where nessesary
+    should have:
+        spells for players to use.
+    could have:
+
+
+Front end:
+    Must have:
+        Basic combat flow
+        Ability to add in enemies.
+        Ability to change (rearrange) enemies based on initiative order once combat is ready to start. 
+        Maybe it should automatically do this? as in every time an enemy is added it puts them to the correct place in the list.
+    Should have:
+        Stats of the current hero/enemy in a sheet to the side. like a mini character sheet.
+        Player Character sheets available for live viewing, will watch their stats change during comabat.
+    Could have:
+        Nicer layout and CSS. Need to get functions and logic sorted first.
+        css: red colour when an enemy is bloodied.
+        A second stat sheet of the currently selected (targeted) enemy. Not for PC viewing.
+        a pop up message (text, dissapears after a second or two) to explain what happened (hit,miss etc)
+
+python:
+    must have:
+        a bit nicer way to get the next initiative, even if its a function it's better than a global!
+
+html:
+    weapon selection drops after refresh. need to keep it.

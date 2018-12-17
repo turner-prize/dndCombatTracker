@@ -1,19 +1,19 @@
-<div id="update" class="updated bit">
-    <div id="mylist" class="default list">
-      {% for item in mylist %}
-        {% if item == nextitem %}
-        <ul id=nextitem><b>{{ nextitem.name }} - <span id=result>{{nextitem.hp}}</span>hp - initiative: {{nextitem.initiative}}</b></ul>
-          {% else %}
-          <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
-        {% endif %}
-      {% endfor %}
-    </div>
+<div id="initiativeOrder" class="updateableHTML">
+  <div id="mylist">
+    {% for item in mylist %}
+      {% if item == nextitem %}
+      <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+        {% else %}
+        <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
+      {% endif %}
+    {% endfor %}
+  </div>
 
-    <div id="weaponSelect" class="default list">
-        <select size=3>
-            {% for w in nextitem.weapons %}
-            <option id=nextitem>{{ w.name }}</option>
-            {% endfor %}
-        </select>
-      </div>
+  <div id="weaponSelect">
+      <select size=3>
+          {% for w in nextitem.weapons %}
+          <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
+          {% endfor %}
+      </select>
+    </div>
 </div>

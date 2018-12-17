@@ -1,5 +1,5 @@
 from diceroll import RollDice
-from weapons import Weapon
+from weapons import Weapon,Weapons,Weapons2
 
 class Enemy:
     def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons):
@@ -56,3 +56,8 @@ class Enemy:
 
     def UpdateHP(self, newHP):
         self.hp = newHP
+
+
+Goblin1=Enemy('goblin1','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=Weapons)
+Goblin2=Enemy('goblin2','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=Weapons)
+Goblin3=Enemy('goblin3','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=Weapons2)
