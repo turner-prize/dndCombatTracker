@@ -16,6 +16,11 @@ Database:
 Front end:
     Must have:
         Basic combat flow
+            1. an enemy gets chosen from the list of available enemies
+            2. enemey details get plucked from sql
+            3. class object is created from the returned sql data
+            3a. weapons are passed to the class instance (also reactions, spells etc but weapons for a start)
+            4. basic attributes needed for combat are added to the combat table for the front end to display
         Ability to add in enemies.
         Ability to change (rearrange) enemies based on initiative order once combat is ready to start. 
         Maybe it should automatically do this? as in every time an enemy is added it puts them to the correct place in the list.

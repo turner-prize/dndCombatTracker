@@ -2,17 +2,22 @@ from flask import Flask, render_template, jsonify, request
 from enemies import Enemy, Goblin1,Goblin2,Goblin3
 from flask_sqlalchemy import SQLAlchemy
 import itertools
+import os
+from models import Enemy
 
 
-
+mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
 db = SQLAlchemy(app)
 
-InitiativeOrder = [Goblin1,Goblin2,Goblin3]
-refdict = {i.name:i for i in InitiativeOrder} #ref dictionary for class lookup
-    
-InitiativeOrder.sort(key=lambda x: int(x.initiative), reverse=True)
-CurrentTurn = itertools.cycle(InitiativeOrder)
+
+
+
+# InitiativeOrder = [Goblin1,Goblin2,Goblin3]
+# refdict = {i.name:i for i in InitiativeOrder} #ref dictionary for class lookup
+# InitiativeOrder.sort(key=lambda x: int(x.initiative), reverse=True)
+# CurrentTurn = itertools.cycle(InitiativeOrder)
 
 @app.route('/attack', methods=['POST'])
 def attack():
