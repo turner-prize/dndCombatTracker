@@ -1,9 +1,12 @@
 from flask import Flask, render_template, jsonify, request
 from enemies import Enemy, Goblin1,Goblin2,Goblin3
+from flask_sqlalchemy import SQLAlchemy
 import itertools
 
 
+
 app = Flask(__name__)
+db = SQLAlchemy(app)
 
 InitiativeOrder = [Goblin1,Goblin2,Goblin3]
 refdict = {i.name:i for i in InitiativeOrder} #ref dictionary for class lookup
