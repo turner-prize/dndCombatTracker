@@ -24,8 +24,8 @@ class Enemy:
         
     def Attack(self, weapon, target):
         if self.alive:
-            aRoll = RollDice('1d20')
-            print ('Attack Roll: ' + str(aRoll))
+            aRoll = RollDice('1d20'+ weapon.attackBonus)
+            print ('Attack Roll: ' + str(aRoll) )
             if aRoll > target.AC:
                 damageDone = RollDice(weapon.damage)
                 print ('The ' + self.name + ' attacks with it''s ' + weapon.name + ' and does ' + str(damageDone) + ' ' + weapon.damageType + ' damage.')

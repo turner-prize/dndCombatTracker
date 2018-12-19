@@ -51,8 +51,20 @@ class Weapon(Base):
     damageType = Column(String)
 
     def __repr__(self):
-        return "<Enemy(name='%s'>" % (self.name)
+        return "<Weapon(name='%s'>" % (self.name)
 
+class Combat(Base):
+    __tablename__ = 'combat'
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = Column(Integer, primary_key=True)
+    enemyid=Column(Integer, ForeignKey('enemies.id'))
+    enemyName = Column(String)
+    initiativeScore = Column(String)
+    currentHp = Column(String)
+    AC = Column(String)
+
+    def __repr__(self):
+        return "<Combat(name='%s'>" % (self.enemyName)
 
 def CreateDbAndPopulate():
     mydir=os.path.dirname(os.path.abspath(__file__))
@@ -157,14 +169,45 @@ def CreateDbAndPopulate():
 
     session.commit()
 
-
+        #below is all well and good but can I just pass a dict to it? probably better to be verbose for the time being.
 def createEnemyInstance(enemyName):
-        Badguy = session.query(Enemy).filter_by(name=enemyName).first()
-        #below is all well and good but can I just pass a dict to it?
-        Gobster =enemies.Enemy('Goblin1',Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=weapons.Weapons2)
-        print (Gobster.AC)
-        print(Gobster.hp)
-        print(Gobster.initiative)
-        return Gobster
+    mydir=os.path.dirname(os.path.abspath(__file__))
+    engine = create_engine(f"sqlite:///{os.path.join(mydir,'combatTracker.db')}")#,echo=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    Base = declarative_base()
+    Base.metadata.create_all(engine)
+    Badguy = session.query(Enemy).filter_by(name=enemyName).first()
+    BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.id).all()
+    BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
+    EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons)
+    return EnemyInstance
 
-#createEnemyInstance('Adult Red Dragon')
+def addToCombatTable(enemy): #need to sort out names of 
+    mydir=os.path.dirname(os.path.abspath(__file__))
+    engine = create_engine(f"sqlite:///{os.path.join(mydir,'combatTracker.db')}")#,echo=True)
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    Base = declarative_base()
+    Base.metadata.create_all(engine)
+    x=session.query(Enemy).filter_by(name=enemy.name).first()
+    session.add(Combat(enemyid=x.id,
+            enemyName=enemy.name,
+            initiativeScore=enemy.initiative,
+            currentHp=enemy.hp,
+            AC=enemy.AC))
+    session.commit()
+
+
+def getCombatOrder():
+    results = session.query(Combat).all()
+    results.sort(key=lamba x: x.initiativeScore)
+    return results
+
+# InitiativeOrder.sort(key=lambda x: int(x.initiative), reverse=True)
+
+combatList = [i.enemyName for i in getCombatOrder()]
+initList = [i.initiativeScore for i in getCombatOrder()]
+
+print(combatList)
+print(initList)

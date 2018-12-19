@@ -3,21 +3,25 @@ from enemies import Enemy, Goblin1,Goblin2,Goblin3
 from flask_sqlalchemy import SQLAlchemy
 import itertools
 import os
-from models import Enemy
+from models import createEnemyInstance,addToCombatTable,getCombatOrder
 
 
 mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
-db = SQLAlchemy(app)
 
+x=createEnemyInstance('Goblin')
+y=createEnemyInstance('Bandit')
+z=createEnemyInstance('Drow')
 
+InitiativeOrder = [x,y,z]
 
+for i in InitiativeOrder:
+    addToCombatTable(i)
 
-# InitiativeOrder = [Goblin1,Goblin2,Goblin3]
-# refdict = {i.name:i for i in InitiativeOrder} #ref dictionary for class lookup
-# InitiativeOrder.sort(key=lambda x: int(x.initiative), reverse=True)
-# CurrentTurn = itertools.cycle(InitiativeOrder)
+refdict = {i.name:i for i in InitiativeOrder} #ref dictionary for class lookup
+
+CurrentTurn = itertools.cycle(InitiativeOrder)
 
 @app.route('/attack', methods=['POST'])
 def attack():
@@ -38,4 +42,4 @@ def index():
 	return render_template('index.html',mylist=InitiativeOrder,nextitem=next(CurrentTurn))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True,use_reloader=False) #usereloader added as debug mode causes flask to run twice when loaded.
