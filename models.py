@@ -201,7 +201,7 @@ def addToCombatTable(enemy): #need to sort out names of
 
 def getCombatOrder():
     results = session.query(Combat).all()
-    results.sort(key=lamba x: x.initiativeScore)
+    results.sort(key=lambda x: int(x.initiativeScore), reverse=True)
     return results
 
 # InitiativeOrder.sort(key=lambda x: int(x.initiative), reverse=True)
