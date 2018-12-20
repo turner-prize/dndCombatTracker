@@ -2,18 +2,18 @@
   <div id="mylist">
     {% for item in mylist %}
       {% if item == nextitem %}
-      <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
-        {% else %}
+        <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+          {% else %}
         <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
       {% endif %}
     {% endfor %}
   </div>
 
   <div id="weaponSelect">
-      <select size=3>
-          {% for w in nextitem.weapons %}
-          <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
-          {% endfor %}
-      </select>
-    </div>
+    <select size=3>
+      {% for w in nextitem.weapons %}
+        <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
+      {% endfor %}
+    </select>
+  </div>
 </div>

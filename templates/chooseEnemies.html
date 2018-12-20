@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>DND!!!!</title>
+</head>
+
+    <body>
+      <script type=text/javascript>
+          $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      </script>
+      
+    <input id="textbox" type="text" />
+    <p>
+    <div id="enemySelect">
+        <select id="select" size=5>
+            {% for enemy in enemieslist %}
+                <option value="{{ enemy.name }}">{{ enemy.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <p><button type="sumbit" class="btn add" id=#addEnemy>Add Enemy</button>
+    <p>
+    <form action="{{ url_for('index') }}">
+        <button type="submit" class="btn return" id=#returnToIndex>Return to Combat</button>
+    </form>
+
+        <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/selectEnemy.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/postEnemy.js') }}"></script>
+    </body>
+</html>

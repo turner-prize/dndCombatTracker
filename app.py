@@ -3,7 +3,7 @@ from enemies import Enemy, Goblin1,Goblin2,Goblin3
 from flask_sqlalchemy import SQLAlchemy
 import itertools
 import os
-from models import createEnemyInstance,addToCombatTable,getCombatOrder
+from models import createEnemyInstance,addToCombatTable,getCombatOrder,generateEnemiesList
 
 
 mydir=os.path.dirname(os.path.abspath(__file__))
@@ -37,9 +37,19 @@ def attack():
 def nextItem():
     return render_template('section.html',mylist=InitiativeOrder,nextitem=next(CurrentTurn))
 
-@app.route('/')
+@app.route('/chooseEnemies')
+def chooseEnemies():
+    enemiesList=generateEnemiesList()
+    return render_template('chooseEnemies.html',enemieslist=enemiesList)
+
+@app.route('/', methods=['GET','POST'])
 def index():
-	return render_template('index.html',mylist=InitiativeOrder,nextitem=next(CurrentTurn))
+    if request.method == 'POST':
+        print(request.form['enemy'])
+        enemiesList=generateEnemiesList()
+        return render_template('chooseEnemies.html',enemieslist=enemiesList)
+    else:
+	    return render_template('index.html',mylist=InitiativeOrder,nextitem=next(CurrentTurn))
 
 if __name__ == '__main__':
     app.run(debug=True,use_reloader=False) #usereloader added as debug mode causes flask to run twice when loaded.

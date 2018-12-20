@@ -14,6 +14,7 @@ def CreateSession():
         return Session()
 
 Base = declarative_base()
+
 #may have to change the name of this class to avoid import errors against enemies.py
 class Enemy(Base):
     __tablename__ = 'enemies'
@@ -89,101 +90,20 @@ def CreateDbAndPopulate():
     for i in badguys:
         x = session.query(Enemy).filter_by(name=i.name).first()
         if not x:
-            session.add(i)
+                session.add(i)
 
-    session.add(Weapon(enemyid=1,
-        name='Scimitar',
-        type='Melee',
-        attackBonus='+4',
-        range='5ft.',
-        targetMax=1,
-        damage='1d6+2',
-        damageType='Slashing'))
-
-    session.add(Weapon(enemyid=1,
-            name='Shortbow',
-            type='Ranged',
-            attackBonus='+4',
-            range='80/320ft.',
-            targetMax=1,
-            damage='1d6+2',
-            damageType='Piercing'))
-
-    session.add(Weapon(enemyid=2,
-            name='Scimitar',
-            type='Melee',
-            attackBonus='+3',
-            range='5ft.',
-            targetMax=1,
-            damage='1d6+1',
-            damageType='Slashing'))
-
-    session.add(Weapon(enemyid=2,
-            name='Light Crossbow',
-            type='Ranged',
-            attackBonus='+3',
-            range='80/320ft.',
-            targetMax=1,
-            damage='1d8+1',
-            damageType='Piercing'))
-
-    session.add(Weapon(enemyid=3,
-            name='Bite',
-            type='Melee',
-            attackBonus='+14',
-            range='10ft.',
-            targetMax=1,
-            damage='2d10+8',
-            damageType='Piercing')) #also has a secondary damage type, 2d6 fire. how best to show this?
-
-    session.add(Weapon(enemyid=3,
-            name='Claw',
-            type='Melee',
-            attackBonus='+14',
-            range='5ft.',
-            targetMax=1,
-            damage='2d6+8',
-            damageType='Slashing'))
-
-    session.add(Weapon(enemyid=3,
-            name='Tail',
-            type='Melee',
-            attackBonus='+14',
-            range='15ft.',
-            targetMax=1,
-            damage='2d8+8',
-            damageType='Bludgeoning'))
-
-    session.add(Weapon(enemyid=4,
-            name='Shortsword',
-            type='Melee',
-            attackBonus='+4',
-            range='5ft.',
-            targetMax=1,
-            damage='1d6+2',
-            damageType='Piercing'))
-
-    session.add(Weapon(enemyid=4,
-            name='Hand Crossbow',
-            type='Ranged',
-            attackBonus='+4',
-            range='30/120ft.',
-            targetMax=1,
-            damage='1d6+2',
-            damageType='Piercing')) #this one has more effects if it hits, need to think of how to show this.
-
-    session.add(Hero(name = 'Beardor',
-                ac = 18,
-                hp = 25))
-
-    session.add(Hero(name = 'James Brown',
-                ac = 17,
-                hp = 23))
-
-    session.add(Hero(name = 'Bonk',
-                ac = 12,
-                hp = 16))
-
+    session.add(Weapon(enemyid=1,name='Scimitar',type='Melee',attackBonus='+4',range='5ft.',targetMax=1,damage='1d6+2',damageType='Slashing'))
+    session.add(Weapon(enemyid=1,name='Shortbow',type='Ranged',attackBonus='+4',range='80/320ft.',targetMax=1,damage='1d6+2',damageType='Piercing'))
+    session.add(Weapon(enemyid=2,name='Scimitar',type='Melee',attackBonus='+3',range='5ft.',targetMax=1,damage='1d6+1',damageType='Slashing'))
+    session.add(Weapon(enemyid=2,name='Light Crossbow',type='Ranged',attackBonus='+3',range='80/320ft.',targetMax=1,damage='1d8+1',damageType='Piercing'))
+    session.add(Weapon(enemyid=3,name='Bite',type='Melee',attackBonus='+14',range='10ft.',targetMax=1,damage='2d10+8',damageType='Piercing')) #also has a secondary damage type, 2d6 fire. how best to show this?
+    session.add(Weapon(enemyid=3,name='Claw',type='Melee',attackBonus='+14',range='5ft.',targetMax=1,damage='2d6+8',damageType='Slashing'))
+    session.add(Weapon(enemyid=3,name='Tail',type='Melee',attackBonus='+14',range='15ft.',targetMax=1,damage='2d8+8',damageType='Bludgeoning'))
+    session.add(Weapon(enemyid=4,name='Shortsword',type='Melee',attackBonus='+4',range='5ft.',targetMax=1,damage='1d6+2',damageType='Piercing'))
+    session.add(Weapon(enemyid=4,name='Hand Crossbow',type='Ranged',attackBonus='+4',range='30/120ft.',targetMax=1,damage='1d6+2',damageType='Piercing')) #this one has more effects if it hits, need to think of how to show this.
+    session.add(Hero(name = 'Beardor',ac = 18,hp = 25))    
+    session.add(Hero(name = 'James Brown',ac = 17,hp = 23))
+    session.add(Hero(name = 'Bonk',ac = 12,hp = 16))
     session.commit()
 
         #below is all well and good but can I just pass a dict to it? probably better to be verbose for the time being.
@@ -198,17 +118,17 @@ def createEnemyInstance(enemyName):
 def addToCombatTable(enemy): #need to sort out names of 
     session = CreateSession()
     x=session.query(Enemy).filter_by(name=enemy.name).first()
-    session.add(Combat(enemyid=x.id,
-            enemyName=enemy.name,
-            initiativeScore=enemy.initiative,
-            currentHp=enemy.hp,
-            AC=enemy.AC))
+    session.add(Combat(enemyid=x.id,enemyName=enemy.name,initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC))
     session.commit()
 
 def getCombatOrder():
+    session = CreateSession()
     results = session.query(Combat).all()
     results.sort(key=lambda x: int(x.initiativeScore), reverse=True)
     return results
 
-
-CreateDbAndPopulate()
+def generateEnemiesList():
+    session = CreateSession()
+    results = session.query(Enemy).all()
+    results.sort(key=lambda x: x.name)
+    return results
