@@ -16,9 +16,9 @@ Database:
 Front end:
     Must have:
         Basic combat flow
-            1. an enemy gets chosen from the list of available enemies
-            2. enemey details get plucked from sql
-            3. class object is created from the returned sql data
+            1. an enemy gets chosen from the list of available enemies DONE
+            2. enemey details get plucked from sql DONE
+            3. class object is created from the returned sql data DONE
             3a. weapons are passed to the class instance (also reactions, spells etc but weapons for a start)
             4. basic attributes needed for combat are added to the combat table for the front end to display
         Ability to add in enemies.
@@ -37,6 +37,7 @@ Front end:
 python:
     must have:
         a bit nicer way to get the next initiative, even if its a function it's better than a global!
+        a way to select multiple enemies
 
 html:
     weapon selection drops after refresh. need to keep it.
