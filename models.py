@@ -115,6 +115,15 @@ def createEnemyInstance(enemyName):
     EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons)
     return EnemyInstance
 
+def referenceEnemyInstance(enemyInstance):
+    print(enemyInstance)
+    session = CreateSession()
+    Badguy = session.query(Enemy).filter_by(name=enemyInstance.enemyName).first()
+    BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.id).all()
+    BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
+    EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,initiative=enemyInstance.initiativeScore)
+    return EnemyInstance
+
 def addToCombatTable(enemy): #need to sort out names of 
     session = CreateSession()
     x=session.query(Enemy).filter_by(name=enemy.name).first()
@@ -132,3 +141,9 @@ def generateEnemiesList():
     results = session.query(Enemy).all()
     results.sort(key=lambda x: x.name)
     return results
+
+def truncateCombatList():
+    session = CreateSession()
+    session.execute('''delete from combat''')
+    session.commit()
+    session.close()

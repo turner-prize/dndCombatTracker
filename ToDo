@@ -29,6 +29,7 @@ Front end:
         Player Character sheets available for live viewing, will watch their stats change during comabat.
     Could have:
         Nicer layout and CSS. Need to get functions and logic sorted first.
+        maybe fitted text aligned right, so that the columns look nicer 
         css: red colour when an enemy is bloodied.
         A second stat sheet of the currently selected (targeted) enemy. Not for PC viewing.
         a pop up message (text, dissapears after a second or two) to explain what happened (hit,miss etc)

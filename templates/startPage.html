@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>DND!!!!</title>
+  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+</head>
+
+    <body>
+      <script type=text/javascript>
+          $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+      </script>
+      There's nothing here! add some enemies!
+      <form action="{{ url_for('chooseEnemies') }}">
+        <button type="submit" class="btn Choose" id=#fwdToChooseEnemies>Choose!</button>
+    </form>
+    </body>
+</html>

@@ -15,10 +15,10 @@
       <div id="initiativeOrder" class="updateableHTML">
         <div id="mylist">
           {% for item in mylist %}
-            {% if item == nextitem %}
+            {% if item.enemyName == nextitem.name %}
               <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
             {% else %}
-              <ul id=item>{{ item.name }} - {{item.hp}}hp - initiative: {{item.initiative}}</ul>
+              <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
             {% endif %}
           {% endfor %}
         </div>
@@ -36,7 +36,7 @@
         <div id="selectionList" class="select list">
           <select size=5>
             {% for item in mylist %}
-              <option value="{{ item.name }}">{{ item.name }}</option>
+              <option value="{{ item.enemyName }}">{{ item.enemyName }}</option>
             {% endfor %}
           </select>
         </div>

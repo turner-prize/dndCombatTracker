@@ -58,6 +58,22 @@ class Enemy:
         self.hp = newHP
 
 
-Goblin1=Enemy('goblin1','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=Weapons)
-Goblin2=Enemy('goblin2','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=Weapons)
-Goblin3=Enemy('goblin3','small','humanoid(goblinoid)','neutral evil',15,'2d6','30ft.',8,14,10,10,8,8,weapons=Weapons2)
+class InitialisedEnemy(Enemy):
+    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons,initiative):
+        self.name = name
+        self.size = size
+        self.type = type
+        self.alignment = alignment
+        self.AC = AC
+        self.hp = hp
+        self.speed = speed
+        self.STR = STR
+        self.DEX = DEX
+        self.CON = CON
+        self.INT = INT
+        self.WIS = WIS
+        self.CHA = CHA
+        self.initiative = initiative
+        self.alive = True
+        self.currentstatus = 'Healthy'
+        self.weapons = [Weapon(**i) for i in weapons]

@@ -1,7 +1,7 @@
   #mylist {
     float: left;
     padding: 20px;
-    width:10%;
+    width:20%;
     background-color: #f1f1f1;
     height: 100px; /* only for demonstration, should be removed */
   }
