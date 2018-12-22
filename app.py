@@ -10,18 +10,8 @@ mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
 truncateCombatList()
-# x=createEnemyInstance('Goblin')
-# y=createEnemyInstance('Bandit')
-# z=createEnemyInstance('Drow')
 
-# InitiativeOrder = [x,y,z]
 
-# for i in InitiativeOrder:
-#     addToCombatTable(i)
-
-# refdict = {i.name:i for i in InitiativeOrder} #ref dictionary for class lookup
-
-# CurrentTurn = itertools.cycle(InitiativeOrder)
 
 @app.route('/attack', methods=['POST'])
 def attack():
