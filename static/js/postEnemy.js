@@ -10,6 +10,5 @@ $(document).ready(function() {
             type : 'POST',
             data : { enemy : enemy}
         });
-
     });
 });

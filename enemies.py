@@ -1,5 +1,6 @@
 from diceroll import RollDice
 from weapons import Weapon,Weapons,Weapons2
+from models import removeEnemy
 
 class Enemy:
     def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons):
@@ -45,6 +46,7 @@ class Enemy:
             print (self.name + ' is dead.')
             self.IsDead = True
             self.currentstatus = 'Dead'
+            removeEnemy(self.name)
         elif currenthp <= (self.max / 2):
             print (self.name + ' is bloodied.')
             self.currentstatus = 'Bloodied'
