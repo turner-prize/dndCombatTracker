@@ -10,17 +10,16 @@
   </div>
 
   <div id="weaponSelect">
-    <select size=3>
+    <select size=10>
       {% for w in nextitem.weapons %}
         <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
       {% endfor %}
     </select>
   </div>
 
-
 <div class="target-selection-container">
   <div id="selectionList" class="select list">
-    <select size=5>
+    <select size=10>
       {% for item in mylist %}
         <option value="{{ item.id }}">{{ item.enemyName }}</option>
       {% endfor %}
@@ -28,6 +27,11 @@
   </div>
 </div>
 
-<div id="fadetest">{{flavourText}}</div>
 
+<footer>
+  <p><button class="btn nextItem" id="nextButton">Next Item</button>
+  <p><button class="btn myButton" id=#currentTurn>attack</button>
+</footer>
+
+<div id="fadetest">{{flavourText}}</div>
 </div>

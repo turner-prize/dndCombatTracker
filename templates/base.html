@@ -1,0 +1,14 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <title>Combat Tracker v0.1</title>
+  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+  <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
+  <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/next.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/attack.js') }}"></script>
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

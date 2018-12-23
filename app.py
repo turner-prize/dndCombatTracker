@@ -12,7 +12,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatT
 truncateCombatList()
 
 
-
 @app.route('/attack', methods=['POST'])
 def attack():
     attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
@@ -39,6 +38,7 @@ def chooseEnemies():
 
 @app.route('/', methods=['GET','POST'])
 def index():
+
     if request.method == 'POST':
         enemy=request.form['enemy'] #pass enemy name (string) to enemy variable
         enemy=createEnemyInstance(enemy) #use name of enemy (e.g. Goblin) to create a class instance of Enemy.
@@ -55,4 +55,4 @@ def index():
         else: #if there is no initiative order it's probably the first time you're opening the session
             return render_template('startPage.html')
 if __name__ == '__main__':
-    app.run(debug=True,use_reloader=False) #usereloader added as debug mode causes flask to run twice when loaded.
+    app.run() #usereloader added as debug mode causes flask to run twice when loaded.

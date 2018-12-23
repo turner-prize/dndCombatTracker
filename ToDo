@@ -5,9 +5,7 @@ General clean up of all code needed!
 Database:
     must have:
         as well as holding the data for enemies and heros (player characters), 
-        it needs to have an 'active combat' table to hold the base details for the characters currently in combat.
         This can just hold the base details like name, initiative, hp and ac (maybe max hp to show bloodied?)
-        New combatants added to the combat should have auto incrementing numbers where nessesary
     should have:
         spells for players to use.
     could have:
@@ -22,8 +20,6 @@ Front end:
             3a. weapons are passed to the class instance (also reactions, spells etc but weapons for a start)
             4. basic attributes needed for combat are added to the combat table for the front end to display
         Ability to add in enemies.
-        Ability to change (rearrange) enemies based on initiative order once combat is ready to start. 
-        Maybe it should automatically do this? as in every time an enemy is added it puts them to the correct place in the list.
     Should have:
         Stats of the current hero/enemy in a sheet to the side. like a mini character sheet.
         Player Character sheets available for live viewing, will watch their stats change during comabat.

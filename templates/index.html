@@ -1,57 +1,40 @@
-<!DOCTYPE HTML>
-<html lang="en">
-<head>
-  <title>DND!!!!</title>
-  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
-  <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
-</head>
-
-    <body>
-      <script type=text/javascript>
-          $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-      </script>
-      
-      
-      <div id="initiativeOrder" class="updateableHTML">
-        <div id="mylist">
-          {% for item in mylist %}
-            {% if item.enemyName == nextitem.name %}
-              <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
-            {% else %}
-              <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiative}}</ul>
-            {% endif %}
-          {% endfor %}
-        </div>
-
-        <div id="weaponSelect">
-          <select size=3>
-            {% for w in nextitem.weapons %}
-              <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
-            {% endfor %}
-          </select>
-        </div>
-
-      <div class="target-selection-container">
-        <div id="selectionList" class="select list">
-          <select size=5>
+{% extends "base.html" %}
+{% block content %}
+        <div id="initiativeOrder" class="updateableHTML">
+          <div id="mylist">
             {% for item in mylist %}
-              <option value="{{ item.id }}">{{ item.enemyName }}</option>
+              {% if item.enemyName == nextitem.name %}
+                <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+              {% else %}
+                <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
+              {% endif %}
             {% endfor %}
-          </select>
+          </div>
+
+          <div id="weaponSelect">
+            <select size=10>
+              {% for w in nextitem.weapons %}
+                <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
+              {% endfor %}
+            </select>
+          </div>
+
+        <div class="target-selection-container">
+          <div id="selectionList" class="select list">
+            <select size=10>
+              {% for item in mylist %}
+                <option value="{{ item.id }}">{{ item.enemyName }}</option>
+              {% endfor %}
+            </select>
+          </div>
         </div>
+
+
+        <footer>
+          <p><button class="btn nextItem" id="nextButton">Next Item</button>
+          <p><button class="btn myButton" id=#currentTurn>attack</button>
+        </footer>
+
+        <div id="fadetest">{{flavourText}}</div>
       </div>
-    </div>
-
-      <footer>
-        <p><button class="btn nextItem" id="nextButton">Next Item</button>
-        <p><button class="btn attack" id=#currentTurn>attack</button>
-      </footer>
-
-      <div id="fadetest">{{flavourText}}</div>
-
-      
-      <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/next.js') }}"></script>
-      <script src="{{ url_for('static', filename='js/attack.js') }}"></script>
-    </body>
-</html>
+{% endblock %}
