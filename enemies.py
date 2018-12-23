@@ -1,6 +1,6 @@
 from diceroll import RollDice
 from weapons import Weapon,Weapons,Weapons2
-from models import removeEnemy
+from models import removeEnemy,updateHP
 
 class Enemy:
     def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons):
@@ -31,7 +31,7 @@ class Enemy:
                 damageDone = RollDice(weapon.damage)
                 print ('The ' + self.name + ' attacks with it''s ' + weapon.name + ' and does ' + str(damageDone) + ' ' + weapon.damageType + ' damage.')
                 target.Damage(damageDone)
-                if type(target) is Enemy:
+                if type(target) is Enemy or type(target) is InitialisedEnemy:
                     target.Status()
             else:
                 print ('The ' + self.name +  "'s attack misses!")
@@ -42,6 +42,7 @@ class Enemy:
  
     def Status (self):
         currenthp = self.hp
+        updateHP(self.name,currenthp)
         if currenthp <= 0:
             print (self.name + ' is dead.')
             self.IsDead = True
@@ -79,3 +80,4 @@ class InitialisedEnemy(Enemy):
         self.alive = True
         self.currentstatus = 'Healthy'
         self.weapons = [Weapon(**i) for i in weapons]
+        self.max = self.hp

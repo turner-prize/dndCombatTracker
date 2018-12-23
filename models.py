@@ -36,7 +36,7 @@ class Enemy(Base):
     #challenge = Column(String)
 
     def __repr__(self):
-        return "<Enemy(name='%s'>" % (self.name)
+        return "<Enemy(name='%s')>" % (self.name)
 
 class Hero(Base):
     __tablename__ = 'heros'
@@ -47,7 +47,7 @@ class Hero(Base):
     hp = Column(Integer)
 
     def __repr__(self):
-        return "<Hero(name='%s'>" % (self.name)
+        return "<Hero(name='%s')>" % (self.name)
 
 class Weapon(Base):
     __tablename__ = 'weapons'
@@ -63,7 +63,7 @@ class Weapon(Base):
     damageType = Column(String)
 
     def __repr__(self):
-        return "<Weapon(name='%s'>" % (self.name)
+        return "<Weapon(name='%s')>" % (self.name)
 
 class Combat(Base):
     __tablename__ = 'combat'
@@ -77,7 +77,7 @@ class Combat(Base):
     hadTurn= Column(Integer)
 
     def __repr__(self):
-        return "<Combat(name='%s'>" % (self.enemyName)
+        return "<Combat(name='%s')>" % (self.enemyName)
 
 def CreateDbAndPopulate():
     session = CreateSession()
@@ -124,7 +124,7 @@ def referenceEnemyInstance(enemyInstance):
     EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,initiative=enemyInstance.initiativeScore)
     return EnemyInstance
 
-def referenceTargetInstance(enemyInstance):
+def referenceEnemyInstanceByName(enemyInstance):
     session = CreateSession()
     Badguy = session.query(Combat).filter_by(enemyName=enemyInstance).first()
     BadguysStats = session.query(Enemy).filter_by(name=Badguy.enemyName).first()
@@ -147,7 +147,7 @@ def markTurn(enemy): #need to sort out names of
 
 def removeEnemy(enemy):
     session = CreateSession()
-    session.query(Combat).filter_by(enemyName=enemy.enemyName).delete() #possibly better to use id? not sure atm
+    session.query(Combat).filter_by(enemyName=enemy).delete() #possibly better to use id? not sure atm
     session.commit()
 
 def getCombatOrder():
@@ -164,6 +164,12 @@ def getNextTurn():
         session.commit()
         results = session.query(Combat).filter(Combat.hadTurn == None).order_by(Combat.initiativeScore.desc()).first()
     return results #Combat.Row entry
+
+def updateHP(enemy,hp):
+    session = CreateSession()
+    results = session.query(Combat).filter(Combat.enemyName == enemy).first()
+    results.currentHp = hp
+    session.commit()
 
 def generateEnemiesList():
     session = CreateSession()

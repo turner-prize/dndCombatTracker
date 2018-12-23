@@ -3,8 +3,8 @@ from enemies import Enemy
 from flask_sqlalchemy import SQLAlchemy
 import itertools
 import os
-from models import createEnemyInstance,addToCombatTable,getCombatOrder,generateEnemiesList,truncateCombatList,referenceEnemyInstance,markTurn,getNextTurn,referenceTargetInstance
-
+from models import createEnemyInstance,addToCombatTable,getCombatOrder,generateEnemiesList,truncateCombatList,referenceEnemyInstance,markTurn,getNextTurn
+from models import referenceEnemyInstanceByName
 
 mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
@@ -15,14 +15,16 @@ truncateCombatList()
 
 @app.route('/attack', methods=['POST'])
 def attack():
-    attacker = referenceEnemyInstance(request.form['attacker[name]'])
+    attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
     for i in attacker.weapons:
         if i.name == request.form['weapon']:
             activeweapon=i
-    target = referenceTargetInstance(request.form['target'])
+    target = referenceEnemyInstanceByName(request.form['target'])
     attacker.Attack(activeweapon,target)
 
     #write resulting stats to db for targeted info if hit?
+
+    InitiativeOrder=getCombatOrder()
 
     return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker)
 

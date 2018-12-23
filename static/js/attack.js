@@ -18,6 +18,8 @@ $(document).ready(function() {
         req.done(function(data) {
 
             $('#initiativeOrder').html(data);
+            $("#div1").fadeIn(1000);
+            $("#div1").fadeOut(1000);
 
         });
     });
