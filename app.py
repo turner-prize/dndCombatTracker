@@ -20,13 +20,9 @@ def attack():
         if i.name == request.form['weapon']:
             activeweapon=i
     target = referenceEnemyInstanceByName(request.form['target'])
-    attacker.Attack(activeweapon,target)
-
-    #write resulting stats to db for targeted info if hit?
-
+    text = attacker.Attack(activeweapon,target)
     InitiativeOrder=getCombatOrder()
-
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker)
+    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,flavourText=text)
 
 @app.route('/nextItem')
 def nextItem():
@@ -44,16 +40,16 @@ def chooseEnemies():
 @app.route('/', methods=['GET','POST'])
 def index():
     if request.method == 'POST':
-        enemy=request.form['enemy']
-        enemy=createEnemyInstance(enemy)
-        addToCombatTable(enemy)
+        enemy=request.form['enemy'] #pass enemy name (string) to enemy variable
+        enemy=createEnemyInstance(enemy) #use name of enemy (e.g. Goblin) to create a class instance of Enemy.
+        addToCombatTable(enemy) #adds to combat list with an appended number to signify which instance of the enemy it is
         enemiesList=generateEnemiesList()
         return render_template('chooseEnemies.html',enemieslist=enemiesList)
     else:
         InitiativeOrder=getCombatOrder()
         if InitiativeOrder: #if there is an initiative order list, it means players and enemies have been added.
-            x=getNextTurn()
-            current = referenceEnemyInstance(x)
+            x=getNextTurn() #returns models.Combat row
+            current = referenceEnemyInstance(x) #creates another Enemy class instance with existing data to populate the html
             markTurn(x)
             return render_template('index.html',mylist=InitiativeOrder,nextitem=current)
         else: #if there is no initiative order it's probably the first time you're opening the session

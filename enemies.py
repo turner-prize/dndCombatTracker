@@ -1,9 +1,10 @@
 from diceroll import RollDice
 from weapons import Weapon,Weapons,Weapons2
-from models import removeEnemy,updateHP
+#from models import removeEnemy,updateHP
+import models
 
 class Enemy:
-    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons):
+    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons,enemyId):
         self.name = name
         self.size = size
         self.type = type
@@ -22,6 +23,7 @@ class Enemy:
         self.alive = True
         self.currentstatus = 'Healthy'
         self.weapons = [Weapon(**i) for i in weapons]
+        self.enemyId = enemyId 
         
     def Attack(self, weapon, target):
         if self.alive:
@@ -33,8 +35,10 @@ class Enemy:
                 target.Damage(damageDone)
                 if type(target) is Enemy or type(target) is InitialisedEnemy:
                     target.Status()
+                return 'The ' + self.name + ' attacks with it''s ' + weapon.name + ' and does ' + str(damageDone) + ' ' + weapon.damageType + ' damage.'
             else:
                 print ('The ' + self.name +  "'s attack misses!")
+                return ('The ' + self.name +  "'s attack misses!")
 
     def Damage(self,amount):
         self.hp = self.hp - amount
@@ -42,12 +46,12 @@ class Enemy:
  
     def Status (self):
         currenthp = self.hp
-        updateHP(self.name,currenthp)
+        models.updateHP(self.name,currenthp)
         if currenthp <= 0:
             print (self.name + ' is dead.')
             self.IsDead = True
             self.currentstatus = 'Dead'
-            removeEnemy(self.name)
+            models.removeEnemy(self.name)
         elif currenthp <= (self.max / 2):
             print (self.name + ' is bloodied.')
             self.currentstatus = 'Bloodied'
@@ -62,7 +66,7 @@ class Enemy:
 
 
 class InitialisedEnemy(Enemy):
-    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons,initiative):
+    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons,initiative,enemyId, combatId):
         self.name = name
         self.size = size
         self.type = type
@@ -81,3 +85,5 @@ class InitialisedEnemy(Enemy):
         self.currentstatus = 'Healthy'
         self.weapons = [Weapon(**i) for i in weapons]
         self.max = self.hp
+        self.enemyId = enemyId
+        self.combatId = combatId

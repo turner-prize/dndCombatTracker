@@ -113,31 +113,29 @@ def createEnemyInstance(enemyName):
     Badguy = session.query(Enemy).filter_by(name=enemyName).first()
     BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.id).all()
     BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
-    EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons)
+    EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,enemyId=Badguy.id)
     return EnemyInstance
 
-def referenceEnemyInstance(enemyInstance):
+def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
     session = CreateSession()
-    Badguy = session.query(Enemy).filter_by(name=enemyInstance.enemyName).first()
+    Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first()
     BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.id).all()
     BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
-    EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,initiative=enemyInstance.initiativeScore)
+    EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,initiative=enemyInstance.initiativeScore,enemyId=Badguy.id,combatId=enemyInstance.id)
     return EnemyInstance
 
-def referenceEnemyInstanceByName(enemyInstance):
+def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a string passed to it
     session = CreateSession()
-    Badguy = session.query(Combat).filter_by(enemyName=enemyInstance).first()
-    BadguysStats = session.query(Enemy).filter_by(name=Badguy.enemyName).first()
+    Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
+
+    print(enemyCombatId)
+    print(Badguy)
+
+    BadguysStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
     BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.enemyid).all()
     BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
-    EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,weapons=BadguysWeapons,initiative=Badguy.initiativeScore)
+    EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,weapons=BadguysWeapons,initiative=Badguy.initiativeScore,enemyId=Badguy.id,combatId=enemyCombatId)
     return EnemyInstance
-
-def addToCombatTable(enemy): #need to sort out names of 
-    session = CreateSession()
-    x=session.query(Enemy).filter_by(name=enemy.name).first()
-    session.add(Combat(enemyid=x.id,enemyName=enemy.name,initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC))
-    session.commit()
 
 def markTurn(enemy): #need to sort out names of 
     session = CreateSession()
@@ -182,3 +180,10 @@ def truncateCombatList():
     session.execute('''delete from combat''')
     session.commit()
     session.close()
+
+def addToCombatTable(enemy): #need to sort out names of 
+    session = CreateSession()
+    x=session.query(Enemy).filter_by(id=enemy.enemyId).first()
+    dupeCheck=session.query(Combat).filter_by(enemyid=enemy.enemyId).count()
+    session.add(Combat(enemyid=x.id,enemyName=f"{enemy.name} {str(dupeCheck +1)}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC))
+    session.commit()

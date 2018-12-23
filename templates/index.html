@@ -16,9 +16,9 @@
         <div id="mylist">
           {% for item in mylist %}
             {% if item.enemyName == nextitem.name %}
-              <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+              <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
             {% else %}
-              <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
+              <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiative}}</ul>
             {% endif %}
           {% endfor %}
         </div>
@@ -30,23 +30,26 @@
             {% endfor %}
           </select>
         </div>
-      </div>
 
       <div class="target-selection-container">
         <div id="selectionList" class="select list">
           <select size=5>
             {% for item in mylist %}
-              <option value="{{ item.enemyName }}">{{ item.enemyName }}</option>
+              <option value="{{ item.id }}">{{ item.enemyName }}</option>
             {% endfor %}
           </select>
         </div>
       </div>
-      <div id="fadetest">tester</div>
+    </div>
+
       <footer>
         <p><button class="btn nextItem" id="nextButton">Next Item</button>
         <p><button class="btn attack" id=#currentTurn>attack</button>
       </footer>
 
+      <div id="fadetest">{{flavourText}}</div>
+
+      
       <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
       <script src="{{ url_for('static', filename='js/next.js') }}"></script>
       <script src="{{ url_for('static', filename='js/attack.js') }}"></script>

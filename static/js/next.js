@@ -3,7 +3,6 @@ $(document).ready(function() {
         $.get( "/nextItem", function( data ) {
             $('#initiativeOrder').html(data);
             //$('#currentTurn').text(data.nextitem);
-
         });
     });
 });

@@ -2,7 +2,7 @@
   <div id="mylist">
     {% for item in mylist %}
       {% if item.enemyName == nextitem.name %}
-        <ul id="currentTurn" data-name="{{nextitem.name}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+        <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
       {% else %}
         <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
       {% endif %}
@@ -16,7 +16,18 @@
       {% endfor %}
     </select>
   </div>
-  
-  <div id="fadetest">tester</div>
+
+
+<div class="target-selection-container">
+  <div id="selectionList" class="select list">
+    <select size=5>
+      {% for item in mylist %}
+        <option value="{{ item.id }}">{{ item.enemyName }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
+<div id="fadetest">{{flavourText}}</div>
 
 </div>
