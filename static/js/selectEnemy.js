@@ -30,3 +30,7 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
 $(function() {
     $('#select').filterByText($('#textbox'), false);
 });
+
+$(function() {
+  $('#selecta').filterByText($('#herotextbox'), false);
+});

@@ -20,6 +20,7 @@ Front end:
             3a. weapons are passed to the class instance (also reactions, spells etc but weapons for a start)
             4. basic attributes needed for combat are added to the combat table for the front end to display
         Ability to add in enemies.
+        Javascript input box for player init scores
     Should have:
         Stats of the current hero/enemy in a sheet to the side. like a mini character sheet.
         Player Character sheets available for live viewing, will watch their stats change during comabat.

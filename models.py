@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import sessionmaker
 import enemies
+import heroes
 import weapons
 
 def CreateSession():
@@ -73,6 +74,7 @@ class Combat(Base):
     enemyName = Column(String)
     initiativeScore = Column(Integer)
     currentHp = Column(Integer)
+    maxHp = Column(Integer)
     AC = Column(Integer)
     hadTurn= Column(Integer)
 
@@ -115,6 +117,12 @@ def createEnemyInstance(enemyName):
     BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
     EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,enemyId=Badguy.id)
     return EnemyInstance
+
+def createHeroInstance(heroName):
+    session = CreateSession()
+    Goodguy = session.query(Hero).filter_by(name=heroName).first()
+    HeroInstance =heroes.Hero(Goodguy.name,Goodguy.hp,Goodguy.ac)
+    return HeroInstance
 
 def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
     session = CreateSession()
@@ -175,6 +183,12 @@ def generateEnemiesList():
     results.sort(key=lambda x: x.name)
     return results
 
+def generateHeroesList():
+    session = CreateSession()
+    results = session.query(Hero).all()
+    results.sort(key=lambda x: x.name)
+    return results
+
 def truncateCombatList():
     session = CreateSession()
     session.execute('''delete from combat''')
@@ -183,7 +197,11 @@ def truncateCombatList():
 
 def addToCombatTable(enemy): #need to sort out names of 
     session = CreateSession()
-    x=session.query(Enemy).filter_by(id=enemy.enemyId).first()
-    dupeCheck=session.query(Combat).filter_by(enemyid=enemy.enemyId).count()
-    session.add(Combat(enemyid=x.id,enemyName=f"{enemy.name} {str(dupeCheck +1)}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC))
-    session.commit()
+    try:
+        x=session.query(Enemy).filter_by(id=enemy.enemyId).first()
+        dupeCheck=session.query(Combat).filter_by(enemyid=enemy.enemyId).count()
+        session.add(Combat(enemyid=x.id,enemyName=f"{enemy.name} {str(dupeCheck +1)}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
+        session.commit()
+    except AttributeError:
+        session.add(Combat(enemyName=f"{enemy.name}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
+        session.commit()
