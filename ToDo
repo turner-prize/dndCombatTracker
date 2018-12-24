@@ -13,6 +13,7 @@ Database:
 
 Front end:
     Must have:
+        !!! now we have heroes involved, we need to be able to auto add damage to enemies, and also a flag for bloodied.
         Basic combat flow
             1. an enemy gets chosen from the list of available enemies DONE
             2. enemey details get plucked from sql DONE
