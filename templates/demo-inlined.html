@@ -280,7 +280,7 @@ function elementClass(contentNode) {
 }</script><stat-block>
     <creature-heading>
       <h1>{{enemy.name}}</h1>
-      <h2>{{enemy.size}} {{enemy.type}}, {{enemy.alignment}}</h2>
+      <h2>{{enemy.size}} {{enemy.type|lower}}, {{enemy.alignment}}</h2>
     </creature-heading>
 
     <top-stats>
@@ -303,10 +303,20 @@ function elementClass(contentNode) {
 
       <abilities-block data-cha="{{enemy.CHA}}" data-con="13" data-dex="11" data-int="1" data-str="{{enemy.STR}}" data-wis="3"></abilities-block>
 
+      {% if enemy.savingthrows %}
+      <property-line>
+        <h4>Saving Throws</h4>
+        <p>{{enemy.savingthrows}}</p>
+      </property-line>
+      {% endif %}
+
+      {% if enemy.immunities %}
       <property-line>
         <h4>Damage Immunities</h4>
-        <p>poison, psychic</p>
+        <p>{{enemy.immunities}}</p>
       </property-line>
+      {% endif %}
+
       <property-line>
         <h4>Condition Immunities</h4>
         <p>blinded, charmed, deafened, exhaustion, frightened, paralyzed,

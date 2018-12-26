@@ -13,7 +13,10 @@ truncateCombatList()
 
 @app.route('/statBlock')
 def statBlockTest():
-    x=createEnemyInstance('Adult Red Dragon')
+    #x=createEnemyInstance('Adult Red Dragon')
+
+    x = {"name":"Dans Test", "savingthrows": "Dex +6, Con +12", "immunities":"psychic"}
+
     return render_template('demo-inlined.html',enemy=x)
 
 @app.route('/attack', methods=['POST'])

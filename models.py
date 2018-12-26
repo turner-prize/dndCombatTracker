@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine
 import os 
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 import enemies
 import heroes
 import weapons
@@ -15,6 +16,7 @@ def CreateSession():
         return Session()
 
 Base = declarative_base()
+
 
 #may have to change the name of this class to avoid import errors against enemies.py
 class Enemy(Base):
@@ -135,10 +137,6 @@ def referenceEnemyInstance(enemyInstance): #this function gets passed a models.C
 def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a string passed to it
     session = CreateSession()
     Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
-
-    print(enemyCombatId)
-    print(Badguy)
-
     BadguysStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
     BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.enemyid).all()
     BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
@@ -205,3 +203,5 @@ def addToCombatTable(enemy): #need to sort out names of
     except AttributeError:
         session.add(Combat(enemyName=f"{enemy.name}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
         session.commit()
+
+
