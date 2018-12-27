@@ -9,10 +9,10 @@
     {% endfor %}
   </div>
 
-  <div id="weaponSelect">
+  <div id="actionSelect">
     <select size=10>
-      {% for w in nextitem.weapons %}
-        <option id=nextWeapon>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
+      {% for w in nextitem.actions %}
+        <option id=nextAction>{{ w.name }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
       {% endfor %}
     </select>
   </div>

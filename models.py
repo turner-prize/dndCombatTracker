@@ -1,12 +1,11 @@
-from sqlalchemy import create_engine
 import os 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey,create_engine
 from sqlalchemy.orm import sessionmaker, Session,relationship
 import enemies
 import heroes
-import weapons
+import actions
 
 def CreateSession():
         mydir=os.path.dirname(os.path.abspath(__file__))
@@ -37,19 +36,29 @@ class Enemy(Base):
     INT = Column(Integer)
     WIS = Column(Integer)
     CHA = Column(Integer)
-    weapons=relationship('Weapon')
     savingThrows=relationship('SavingThrows')
     challenge = Column(String)
     senses = Column(String) #list?
     languages = Column(String) #list?
+    legendaryActionsOverview = Column(String)
+    actions=relationship('Action')
+    
 
     def __repr__(self):
         return self.name
 
+class SpecialTraits(Base):
+    __tablename__ = 'specialTraits'
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = Column(Integer, primary_key=True)
+    enemyid = Column(Integer, ForeignKey('enemies.id'))
+    title = Column(String)
+    description = Column(String)
+
 class SavingThrows(Base):
     __tablename__ = 'savingThrows'
     __table_args__ = {'sqlite_autoincrement': True}
-    savingThrowid = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     enemyid = Column(Integer, ForeignKey('enemies.id'))
     STR = Column(String)
     DEX = Column(String)
@@ -59,34 +68,22 @@ class SavingThrows(Base):
     CHA = Column(String)
     #enemy=relationship("Enemy", back_populates="savingThrows")
 
-class DamageTypes(Base):
-    __tablename__ = 'damageTypes'
-    __table_args__ = {'sqlite_autoincrement': True}
-    damageTypeid = Column(Integer, primary_key=True)
-    damageName=Column(String)
-
 class DamageResistance(Base):
     __tablename__ = 'damageResistance'
     __table_args__ = {'sqlite_autoincrement': True}
-    damageid = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     enemyid = Column(Integer, ForeignKey('enemies.id'))
-    damageTypeid=Column(Integer)
+    damageName=Column(String)
     immune=Column(Integer)
     resistant=Column(Integer)
     vulnerable=Column(Integer)
 
-class ConditionTypes(Base):
-    __tablename__ = 'conditionTypes'
-    __table_args__ = {'sqlite_autoincrement': True}
-    conditionTypeid = Column(Integer, primary_key=True)
-    conditionName=Column(String)
-
 class ConditionImmunities(Base):
     __tablename__ = 'conditionImmunities'
     __table_args__ = {'sqlite_autoincrement': True}
-    conditionid = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     enemyid = Column(Integer, ForeignKey('enemies.id'))
-    conditionTypeid=Column(Integer)
+    conditionName=Column(String)
     immune=Column(Integer)
 
 class Hero(Base):
@@ -100,8 +97,8 @@ class Hero(Base):
     def __repr__(self):
         return self.name
 
-class Weapon(Base):
-    __tablename__ = 'weapons'
+class Action(Base):
+    __tablename__ = 'actions'
     __table_args__ = {'sqlite_autoincrement': True}
     id = Column(Integer, primary_key=True)
     enemyid=Column(Integer, ForeignKey('enemies.id'))
@@ -112,6 +109,17 @@ class Weapon(Base):
     targetMax = Column(Integer)
     damage = Column(String)
     damageType = Column(String)
+
+    def __repr__(self):
+        return self.name
+
+class LedgendaryAction(Base):
+    __tablename__ = 'ledgendaryActions'
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = Column(Integer, primary_key=True)
+    enemyid=Column(Integer, ForeignKey('enemies.id'))
+    title = Column(String)
+    description = Column(String)
 
     def __repr__(self):
         return self.name
@@ -136,7 +144,10 @@ def CreateDbAndPopulate():
     session = CreateSession()
     goblin=Enemy(name='Goblin',size='Small',type='Humanoid(Goblinoid)',alignment='neutral evil',ac=15,hp='2d6',speed='30ft.',STR=8,DEX=14,CON=10,INT=10,WIS=8,CHA=8)
     bandit=Enemy(name='Bandit',size='Medium',type='Humanoid(any race)',alignment='any non-lawful alignment',ac=12,hp='2d8+2',speed='30ft.',STR=11,DEX=12,CON=12,INT=10,WIS=10,CHA=10)
-    dragon=Enemy(name='Adult Red Dragon',size='Huge',type='Dragon',alignment='chaotic evil',ac=19,hp='19d12+133',speed='40ft., climb 40ft., fly 80ft.',STR=27,DEX=10,CON=25,INT=16,WIS=13,CHA=21)
+    dragon=Enemy(name='Adult Red Dragon',size='Huge',type='Dragon',alignment='chaotic evil',ac=19,hp='19d12+133',speed='40ft., climb 40ft., fly 80ft.',STR=27,DEX=10,CON=25,INT=16,WIS=13,CHA=21,languages="Common,Draconic",senses="blindsight 60ft., darkvision 120ft., passive Perception 23",challenge="17 (18,000xp)",legendaryActionsOverview="""The dragon can take 3 legendary actions, choosing from the
+                                                                                                                                                                                                                            options below. Only one legendary action option can be used
+                                                                                                                                                                                                                            at a time and only at the end of another creature's turn. The
+                                                                                                                                                                                                                            dragon regains spent legendary actions at the start of its turn.""")
     drow=Enemy(name='Drow',size='Medium',type='Humanoid(Elf)',alignment='neutral evil',ac=15,hp='3d8',speed='30ft.',STR=10,DEX=14,CON=10,INT=11,WIS=11,CHA=12)
 
     badguys=[goblin,bandit,dragon,drow]
@@ -146,19 +157,20 @@ def CreateDbAndPopulate():
         if not x:
                 session.add(i)
 
-    session.add(Weapon(enemyid=1,name='Scimitar',type='Melee',attackBonus='+4',range='5ft.',targetMax=1,damage='1d6+2',damageType='Slashing'))
-    session.add(Weapon(enemyid=1,name='Shortbow',type='Ranged',attackBonus='+4',range='80/320ft.',targetMax=1,damage='1d6+2',damageType='Piercing'))
-    session.add(Weapon(enemyid=2,name='Scimitar',type='Melee',attackBonus='+3',range='5ft.',targetMax=1,damage='1d6+1',damageType='Slashing'))
-    session.add(Weapon(enemyid=2,name='Light Crossbow',type='Ranged',attackBonus='+3',range='80/320ft.',targetMax=1,damage='1d8+1',damageType='Piercing'))
-    session.add(Weapon(enemyid=3,name='Bite',type='Melee',attackBonus='+14',range='10ft.',targetMax=1,damage='2d10+8',damageType='Piercing')) #also has a secondary damage type, 2d6 fire. how best to show this?
-    session.add(Weapon(enemyid=3,name='Claw',type='Melee',attackBonus='+14',range='5ft.',targetMax=1,damage='2d6+8',damageType='Slashing'))
-    session.add(Weapon(enemyid=3,name='Tail',type='Melee',attackBonus='+14',range='15ft.',targetMax=1,damage='2d8+8',damageType='Bludgeoning'))
-    session.add(Weapon(enemyid=4,name='Shortsword',type='Melee',attackBonus='+4',range='5ft.',targetMax=1,damage='1d6+2',damageType='Piercing'))
-    session.add(Weapon(enemyid=4,name='Hand Crossbow',type='Ranged',attackBonus='+4',range='30/120ft.',targetMax=1,damage='1d6+2',damageType='Piercing')) #this one has more effects if it hits, need to think of how to show this.
+    session.add(Action(enemyid=1,name='Scimitar',type='Melee',attackBonus='+4',range='5ft.',targetMax=1,damage='1d6+2',damageType='Slashing'))
+    session.add(Action(enemyid=1,name='Shortbow',type='Ranged',attackBonus='+4',range='80/320ft.',targetMax=1,damage='1d6+2',damageType='Piercing'))
+    session.add(Action(enemyid=2,name='Scimitar',type='Melee',attackBonus='+3',range='5ft.',targetMax=1,damage='1d6+1',damageType='Slashing'))
+    session.add(Action(enemyid=2,name='Light Crossbow',type='Ranged',attackBonus='+3',range='80/320ft.',targetMax=1,damage='1d8+1',damageType='Piercing'))
+    session.add(Action(enemyid=3,name='Bite',type='Melee',attackBonus='+14',range='10ft.',targetMax=1,damage='2d10+8',damageType='Piercing')) #also has a secondary damage type, 2d6 fire. how best to show this?
+    session.add(Action(enemyid=3,name='Claw',type='Melee',attackBonus='+14',range='5ft.',targetMax=1,damage='2d6+8',damageType='Slashing'))
+    session.add(Action(enemyid=3,name='Tail',type='Melee',attackBonus='+14',range='15ft.',targetMax=1,damage='2d8+8',damageType='Bludgeoning'))
+    session.add(Action(enemyid=4,name='Shortsword',type='Melee',attackBonus='+4',range='5ft.',targetMax=1,damage='1d6+2',damageType='Piercing'))
+    session.add(Action(enemyid=4,name='Hand Crossbow',type='Ranged',attackBonus='+4',range='30/120ft.',targetMax=1,damage='1d6+2',damageType='Piercing')) #this one has more effects if it hits, need to think of how to show this.
     session.add(Hero(name = 'Beardor',ac = 18,hp = 25))    
     session.add(Hero(name = 'James Brown',ac = 17,hp = 23))
     session.add(Hero(name = 'Bonk',ac = 12,hp = 16))
     session.add(SavingThrows(enemyid=3,DEX='+6',CON='+13',WIS='+7',CHA='+5'))
+    session.add(SpecialTraits(enemyid=3,title='Legendary Resistance (3/Day).',description="If the dragon fails a saving throw, it can choose to succeed instead."))
     session.commit()
     session.close()
 
@@ -166,10 +178,13 @@ def CreateDbAndPopulate():
 def createEnemyInstance(enemyName):
     session = CreateSession()
     Badguy = session.query(Enemy).filter_by(name=enemyName).first()
-    BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.id).all()
-    BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
-    EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,enemyId=Badguy.id)
-    return EnemyInstance
+    Badguy ={k:v for k, v in Badguy.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None}
+    BadguysActions = session.query(Action).filter_by(enemyid=Badguy['id']).all()
+    BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
+    st = session.query(SavingThrows).filter_by(enemyid=Badguy.id).first()
+    saving_throws=[f"{k}:{v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
+    #EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,actions=BadguysActions,enemyId=Badguy.id)
+    #return EnemyInstance
 
 def createHeroInstance(heroName):
     session = CreateSession()
@@ -180,18 +195,18 @@ def createHeroInstance(heroName):
 def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
     session = CreateSession()
     Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first()
-    BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.id).all()
-    BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
-    EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,weapons=BadguysWeapons,initiative=enemyInstance.initiativeScore,enemyId=Badguy.id,combatId=enemyInstance.id)
+    BadguysActions = session.query(Action).filter_by(enemyid=Badguy.id).all()
+    BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
+    EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,actions=BadguysActions,initiative=enemyInstance.initiativeScore,enemyId=Badguy.id,combatId=enemyInstance.id)
     return EnemyInstance
 
 def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a string passed to it
     session = CreateSession()
     Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
     BadguysStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
-    BadguysWeapons = session.query(Weapon).filter_by(enemyid=Badguy.enemyid).all()
-    BadguysWeapons = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysWeapons]
-    EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,weapons=BadguysWeapons,initiative=Badguy.initiativeScore,enemyId=Badguy.id,combatId=enemyCombatId)
+    BadguysActions = session.query(Action).filter_by(enemyid=Badguy.enemyid).all()
+    BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
+    EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,actions=BadguysActions,initiative=Badguy.initiativeScore,enemyId=Badguy.id,combatId=enemyCombatId)
     return EnemyInstance
 
 def markTurn(enemy): #need to sort out names of 
@@ -255,9 +270,5 @@ def addToCombatTable(enemy): #need to sort out names of
         session.add(Combat(enemyName=f"{enemy.name}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
         session.commit()
 
+createEnemyInstance("Adult Red Dragon")
 
-#join examples
-# session = CreateSession()
-# x = session.query(Enemy,SavingThrows).filter(Enemy.id==SavingThrows.enemyid).filter(Enemy.name=='Adult Red Dragon').all()
-# x = session.query(Enemy).join(SavingThrows).filter(Enemy.name=='Adult Red Dragon').first()
-# print(x.savingThrows[0].__dict__)

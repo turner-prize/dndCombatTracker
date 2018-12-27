@@ -1,10 +1,10 @@
 from diceroll import RollDice
-from weapons import Weapon,Weapons,Weapons2
+from actions import Action
 #from models import removeEnemy,updateHP
 import models
 
 class Enemy:
-    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons,enemyId):
+    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,actions,enemyId):
         self.name = name
         self.size = size
         self.type = type
@@ -22,20 +22,20 @@ class Enemy:
         self.max = self.hp
         self.alive = True
         self.currentstatus = 'Healthy'
-        self.weapons = [Weapon(**i) for i in weapons]
+        self.actions = [Action(**i) for i in actions]
         self.enemyId = enemyId 
         
-    def Attack(self, weapon, target):
+    def Attack(self, action, target):
         if self.alive:
-            aRoll = RollDice('1d20'+ weapon.attackBonus)
+            aRoll = RollDice('1d20'+ action.attackBonus)
             print ('Attack Roll: ' + str(aRoll) )
             if aRoll > target.AC:
-                damageDone = RollDice(weapon.damage)
-                print ('The ' + self.name + ' attacks with it''s ' + weapon.name + ' and does ' + str(damageDone) + ' ' + weapon.damageType + ' damage.')
+                damageDone = RollDice(action.damage)
+                print ('The ' + self.name + ' attacks with it''s ' + action.name + ' and does ' + str(damageDone) + ' ' + action.damageType + ' damage.')
                 target.Damage(damageDone)
                 if type(target) is Enemy or type(target) is InitialisedEnemy:
                     target.Status()
-                return 'The ' + self.name + ' attacks with it''s ' + weapon.name + ' and does ' + str(damageDone) + ' ' + weapon.damageType + ' damage.'
+                return 'The ' + self.name + ' attacks with it''s ' + action.name + ' and does ' + str(damageDone) + ' ' + action.damageType + ' damage.'
             else:
                 print ('The ' + self.name +  "'s attack misses!")
                 return ('The ' + self.name +  "'s attack misses!")
@@ -58,15 +58,15 @@ class Enemy:
         elif currenthp > (self.max / 2):
             print (self.name + ' is ok.')
             
-    def CurrentWeapon(self, weaponDict):
-        self.cWeapon = weaponDict
+    def CurrentAction(self, actionDict):
+        self.cAction = actionDict
 
     def UpdateHP(self, newHP):
         self.hp = newHP
 
 
 class InitialisedEnemy(Enemy):
-    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,weapons,initiative,enemyId, combatId):
+    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,actions,initiative,enemyId, combatId):
         self.name = name
         self.size = size
         self.type = type
@@ -83,7 +83,7 @@ class InitialisedEnemy(Enemy):
         self.initiative = initiative
         self.alive = True
         self.currentstatus = 'Healthy'
-        self.weapons = [Weapon(**i) for i in weapons]
+        self.actions = [Action(**i) for i in actions]
         self.max = self.hp
         self.enemyId = enemyId
         self.combatId = combatId

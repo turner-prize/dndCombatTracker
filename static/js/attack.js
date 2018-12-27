@@ -5,14 +5,14 @@ $(document).ready(function() {
         //var attacker = $(this).attr('attacker');
         
         var attacker = $('#currentTurn').data();
-        var weapon = $('#weaponSelect option:selected').val();
+        var action = $('#actionSelect option:selected').val();
         var target = $('#selectionList option:selected').val();
         var URL ="/attack"
 
         req = $.ajax({
             url : URL,
             type : 'POST',
-            data : { attacker : attacker, weapon : weapon, target : target }
+            data : { attacker : attacker, action : action, target : target }
         });
 
         req.done(function(data) {

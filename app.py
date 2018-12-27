@@ -22,11 +22,11 @@ def statBlockTest():
 @app.route('/attack', methods=['POST'])
 def attack():
     attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
-    for i in attacker.weapons:
-        if i.name == request.form['weapon']:
-            activeweapon=i
+    for i in attacker.actions:
+        if i.name == request.form['action']:
+            action=i
     target = referenceEnemyInstanceByName(request.form['target'])
-    text = attacker.Attack(activeweapon,target)
+    text = attacker.Attack(action,target)
     InitiativeOrder=getCombatOrder()
     return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,flavourText=text)
 
