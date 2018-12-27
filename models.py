@@ -57,6 +57,36 @@ class SavingThrows(Base):
     CHA = Column(String)
     #enemy=relationship("Enemy", back_populates="savingThrows")
 
+class DamageTypes(Base):
+    __tablename__ = 'damageTypes'
+    __table_args__ = {'sqlite_autoincrement': True}
+    damageTypeid = Column(Integer, primary_key=True)
+    damageName=Column(String)
+
+class DamageResistance(Base):
+    __tablename__ = 'damageResistance'
+    __table_args__ = {'sqlite_autoincrement': True}
+    damageid = Column(Integer, primary_key=True)
+    enemyid = Column(Integer, ForeignKey('enemies.id'))
+    damageTypeid=Column(Integer)
+    immune=Column(Integer)
+    resistant=Column(Integer)
+    vulnerable=Column(Integer)
+
+class ConditionTypes(Base):
+    __tablename__ = 'conditionTypes'
+    __table_args__ = {'sqlite_autoincrement': True}
+    conditionTypeid = Column(Integer, primary_key=True)
+    conditionName=Column(String)
+
+class ConditionImmunities(Base):
+    __tablename__ = 'conditionImmunities'
+    __table_args__ = {'sqlite_autoincrement': True}
+    conditionid = Column(Integer, primary_key=True)
+    enemyid = Column(Integer, ForeignKey('enemies.id'))
+    conditionTypeid=Column(Integer)
+    immune=Column(Integer)
+
 class Hero(Base):
     __tablename__ = 'heros'
     __table_args__ = {'sqlite_autoincrement': True}
