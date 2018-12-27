@@ -3,7 +3,7 @@ import os
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy import Column, Integer, String, ForeignKey
-from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.orm import sessionmaker, Session,relationship
 import enemies
 import heroes
 import weapons
@@ -28,6 +28,7 @@ class Enemy(Base):
     type = Column(String)
     alignment = Column(String)
     ac = Column(Integer)
+    armorType = Column(String)
     hp = Column(String)
     speed = Column(String)
     STR = Column(Integer)
@@ -36,10 +37,25 @@ class Enemy(Base):
     INT = Column(Integer)
     WIS = Column(Integer)
     CHA = Column(Integer)
-    #challenge = Column(String)
+    weapons=relationship('Weapon')
+    savingThrows=relationship('SavingThrows')
+    challenge = Column(String)
 
     def __repr__(self):
-        return "<Enemy(name='%s')>" % (self.name)
+        return self.name
+
+class SavingThrows(Base):
+    __tablename__ = 'savingThrows'
+    __table_args__ = {'sqlite_autoincrement': True}
+    savingThrowid = Column(Integer, primary_key=True)
+    enemyid = Column(Integer, ForeignKey('enemies.id'))
+    STR = Column(String)
+    DEX = Column(String)
+    CON = Column(String)
+    INT = Column(String)
+    WIS = Column(String)
+    CHA = Column(String)
+    #enemy=relationship("Enemy", back_populates="savingThrows")
 
 class Hero(Base):
     __tablename__ = 'heros'
@@ -50,7 +66,7 @@ class Hero(Base):
     hp = Column(Integer)
 
     def __repr__(self):
-        return "<Hero(name='%s')>" % (self.name)
+        return self.name
 
 class Weapon(Base):
     __tablename__ = 'weapons'
@@ -66,7 +82,7 @@ class Weapon(Base):
     damageType = Column(String)
 
     def __repr__(self):
-        return "<Weapon(name='%s')>" % (self.name)
+        return self.name
 
 class Combat(Base):
     __tablename__ = 'combat'
@@ -81,7 +97,8 @@ class Combat(Base):
     hadTurn= Column(Integer)
 
     def __repr__(self):
-        return "<Combat(name='%s')>" % (self.enemyName)
+        return self.enemyName
+
 
 def CreateDbAndPopulate():
     session = CreateSession()
@@ -109,7 +126,9 @@ def CreateDbAndPopulate():
     session.add(Hero(name = 'Beardor',ac = 18,hp = 25))    
     session.add(Hero(name = 'James Brown',ac = 17,hp = 23))
     session.add(Hero(name = 'Bonk',ac = 12,hp = 16))
+    session.add(SavingThrows(enemyid=3,DEX='+6',CON='+13',WIS='+7',CHA='+5'))
     session.commit()
+    session.close()
 
         #below is all well and good but can I just pass a dict to it? probably better to be verbose for the time being.
 def createEnemyInstance(enemyName):
@@ -205,3 +224,8 @@ def addToCombatTable(enemy): #need to sort out names of
         session.commit()
 
 
+#join examples
+# session = CreateSession()
+# x = session.query(Enemy,SavingThrows).filter(Enemy.id==SavingThrows.enemyid).filter(Enemy.name=='Adult Red Dragon').all()
+# x = session.query(Enemy).join(SavingThrows).filter(Enemy.name=='Adult Red Dragon').first()
+# print(x.savingThrows[0].__dict__)
