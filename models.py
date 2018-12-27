@@ -40,6 +40,8 @@ class Enemy(Base):
     weapons=relationship('Weapon')
     savingThrows=relationship('SavingThrows')
     challenge = Column(String)
+    senses = Column(String) #list?
+    languages = Column(String) #list?
 
     def __repr__(self):
         return self.name
