@@ -306,7 +306,10 @@ function elementClass(contentNode) {
       {% if enemy.savingthrows %}
       <property-line>
         <h4>Saving Throws</h4>
-        <p>{{enemy.savingthrows}}</p>
+      {% for st in enemy.savingthrows %}
+      {{st}}
+      {%- if not loop.last %},{% endif %} <!-- this bit will only put in a comma if its not the end of the loop yet -->
+      {% endfor %}
       </property-line>
       {% endif %}
 

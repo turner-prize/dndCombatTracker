@@ -15,7 +15,7 @@ truncateCombatList()
 def statBlockTest():
     #x=createEnemyInstance('Adult Red Dragon')
 
-    x = {"name":"Dans Test", "savingthrows": "Dex +6, Con +12", "immunities":"psychic"}
+    x = {"name":"Dans Test", "savingthrows": ["Dex +6", "Con +12","Wis +12"], "immunities":"psychic"}
 
     return render_template('demo-inlined.html',enemy=x)
 
