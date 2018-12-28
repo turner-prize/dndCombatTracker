@@ -3,13 +3,13 @@ from enemies import Enemy
 from flask_sqlalchemy import SQLAlchemy
 import itertools
 import os
-from models import createEnemyInstance,addToCombatTable,getCombatOrder,generateEnemiesList,truncateCombatList,referenceEnemyInstance,markTurn,getNextTurn,referenceEnemyInstanceByName,generateHeroesList,createHeroInstance
+from models import createEnemyInstance,addToCombatTable,truncateCombatList,getCombatOrder,generateEnemiesList
 
 
 mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
-db=SQLAlchemy(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
+# db=SQLAlchemy(app)
 truncateCombatList()
 
 @app.route('/statBlock')
@@ -74,4 +74,7 @@ def index():
         else: #if there is no initiative order it's probably the first time you're opening the session
             return render_template('startPage.html')
 if __name__ == '__main__':
-    app.run(debug=True) #usereloader added as debug mode causes flask to run twice when loaded.
+    app.run(debug=True,use_reloader=False) #usereloader added as debug mode causes flask to run twice when loaded.
+
+
+    #https://stackoverflow.com/questions/34009296/using-sqlalchemy-session-from-flask-raises-sqlite-objects-created-in-a-thread-c
