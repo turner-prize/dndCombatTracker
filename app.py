@@ -3,19 +3,20 @@ from enemies import Enemy
 from flask_sqlalchemy import SQLAlchemy
 import itertools
 import os
-from models import createEnemyInstance,addToCombatTable,getCombatOrder,generateEnemiesList,truncateCombatList,referenceEnemyInstance,markTurn,getNextTurn
-from models import referenceEnemyInstanceByName,generateHeroesList,createHeroInstance
+from models import createEnemyInstance,addToCombatTable,getCombatOrder,generateEnemiesList,truncateCombatList,referenceEnemyInstance,markTurn,getNextTurn,referenceEnemyInstanceByName,generateHeroesList,createHeroInstance
+
 
 mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
+db=SQLAlchemy(app)
 truncateCombatList()
 
 @app.route('/statBlock')
 def statBlockTest():
     #x=createEnemyInstance('Adult Red Dragon')
 
-    x = {"name":"Dans Test", "savingthrows": ["Dex +6", "Con +12","Wis +12"], "immunities":"psychic"}
+    x = {"name":"Doms a twat", "savingthrows": ["Dex +6", "Con +12","Wis +12"], "immunities":"psychic"}
 
     return render_template('demo-inlined.html',enemy=x)
 
@@ -23,7 +24,7 @@ def statBlockTest():
 def attack():
     attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
     for i in attacker.actions:
-        if i.name == request.form['action']:
+        if i.actionName == request.form['action']:
             action=i
     target = referenceEnemyInstanceByName(request.form['target'])
     text = attacker.Attack(action,target)
@@ -73,4 +74,4 @@ def index():
         else: #if there is no initiative order it's probably the first time you're opening the session
             return render_template('startPage.html')
 if __name__ == '__main__':
-    app.run() #usereloader added as debug mode causes flask to run twice when loaded.
+    app.run(debug=True) #usereloader added as debug mode causes flask to run twice when loaded.

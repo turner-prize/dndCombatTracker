@@ -16,7 +16,6 @@ def CreateSession():
 
 Base = declarative_base()
 
-
 #may have to change the name of this class to avoid import errors against enemies.py
 class Enemy(Base):
     __tablename__ = 'enemies'
@@ -172,19 +171,21 @@ def CreateDbAndPopulate():
     session.add(SavingThrows(enemyid=3,DEX='+6',CON='+13',WIS='+7',CHA='+5'))
     session.add(SpecialTraits(enemyid=3,title='Legendary Resistance (3/Day).',description="If the dragon fails a saving throw, it can choose to succeed instead."))
     session.commit()
-    session.close()
 
-        #below is all well and good but can I just pass a dict to it? probably better to be verbose for the time being.
 def createEnemyInstance(enemyName):
     session = CreateSession()
     Badguy = session.query(Enemy).filter_by(name=enemyName).first()
     Badguy ={k:v for k, v in Badguy.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None}
     BadguysActions = session.query(Action).filter_by(enemyid=Badguy['id']).all()
     BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
-    st = session.query(SavingThrows).filter_by(enemyid=Badguy.id).first()
-    saving_throws=[f"{k}:{v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
-    #EnemyInstance =enemies.Enemy(Badguy.name,Badguy.size,Badguy.type,Badguy.alignment,Badguy.ac,Badguy.hp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,actions=BadguysActions,enemyId=Badguy.id)
-    #return EnemyInstance
+    Badguy['actions'] = BadguysActions
+    st = session.query(SavingThrows).filter_by(enemyid=Badguy['id']).first()
+    if st:
+        saving_throws=[f"{k}:{v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
+        Badguy['savingThrows'] = saving_throws
+    EnemyInstance =enemies.Enemy(**Badguy)
+    session.close()
+    return EnemyInstance
 
 def createHeroInstance(heroName):
     session = CreateSession()
@@ -257,7 +258,6 @@ def truncateCombatList():
     session = CreateSession()
     session.execute('''delete from combat''')
     session.commit()
-    session.close()
 
 def addToCombatTable(enemy): #need to sort out names of 
     session = CreateSession()
@@ -266,9 +266,8 @@ def addToCombatTable(enemy): #need to sort out names of
         dupeCheck=session.query(Combat).filter_by(enemyid=enemy.enemyId).count()
         session.add(Combat(enemyid=x.id,enemyName=f"{enemy.name} {str(dupeCheck +1)}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
         session.commit()
+        session.close()
     except AttributeError:
         session.add(Combat(enemyName=f"{enemy.name}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
         session.commit()
-
-createEnemyInstance("Adult Red Dragon")
-
+        session.close()
