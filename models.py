@@ -41,8 +41,8 @@ class Enemy(Base):
     languages = Column(String) #list?
     legendaryActionsOverview = Column(String)
     actions=relationship('Action')
+    specialTraits=relationship('SpecialTraits')
     
-
     def __repr__(self):
         return self.name
 
@@ -52,6 +52,15 @@ class SpecialTraits(Base):
     id = Column(Integer, primary_key=True)
     enemyid = Column(Integer, ForeignKey('enemies.id'))
     title = Column(String)
+    description = Column(String)
+
+class ActionsText(Base):
+    __tablename__ = 'actionsText'
+    __table_args__ = {'sqlite_autoincrement': True}
+    id = Column(Integer, primary_key=True)
+    enemyid = Column(Integer, ForeignKey('enemies.id'))
+    title = Column(String)
+    actionType=Column(String)
     description = Column(String)
 
 class SavingThrows(Base):
@@ -179,80 +188,90 @@ def createEnemyInstance(enemyName):
     BadguysActions = session.query(Action).filter_by(enemyid=Badguy['id']).all()
     BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
     Badguy['actions'] = BadguysActions
+
     st = session.query(SavingThrows).filter_by(enemyid=Badguy['id']).first()
     if st:
-        saving_throws=[f"{k}:{v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
+        saving_throws=[f"{k.title()} {v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
         Badguy['savingThrows'] = saving_throws
+
+    traits = session.query(SpecialTraits).filter_by(enemyid=Badguy['id']).first()
+    if traits:
+        Badguy['specialTraits'] = [{'title':traits.title,'description':traits.description}]
+
+    actionsText = session.query(ActionsText).filter_by(enemyid=Badguy['id']).all()
+    if actionsText:
+        Badguy['actionsText'] = [{'title':i.title,'actionType':i.actionType,'description':i.description} for i in actionsText]
+
     EnemyInstance =enemies.Enemy(**Badguy)
     session.close()
     return EnemyInstance
 
-# def createHeroInstance(heroName):
-#     session = CreateSession()
-#     Goodguy = session.query(Hero).filter_by(name=heroName).first()
-#     HeroInstance =heroes.Hero(Goodguy.name,Goodguy.hp,Goodguy.ac)
-#     return HeroInstance
+def createHeroInstance(heroName):
+    session = CreateSession()
+    Goodguy = session.query(Hero).filter_by(name=heroName).first()
+    HeroInstance =heroes.Hero(Goodguy.name,Goodguy.hp,Goodguy.ac)
+    return HeroInstance
 
-# def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
-#     session = CreateSession()
-#     Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first()
-#     BadguysActions = session.query(Action).filter_by(enemyid=Badguy.id).all()
-#     BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
-#     EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,actions=BadguysActions,initiative=enemyInstance.initiativeScore,enemyId=Badguy.id,combatId=enemyInstance.id)
-#     return EnemyInstance
+def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
+    session = CreateSession()
+    Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first()
+    BadguysActions = session.query(Action).filter_by(enemyid=Badguy.id).all()
+    BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
+    EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,actions=BadguysActions,initiative=enemyInstance.initiativeScore,enemyId=Badguy.id,combatId=enemyInstance.id)
+    return EnemyInstance
 
-# def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a string passed to it
-#     session = CreateSession()
-#     Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
-#     BadguysStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
-#     BadguysActions = session.query(Action).filter_by(enemyid=Badguy.enemyid).all()
-#     BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
-#     EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,actions=BadguysActions,initiative=Badguy.initiativeScore,enemyId=Badguy.id,combatId=enemyCombatId)
-#     return EnemyInstance
+def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a string passed to it
+    session = CreateSession()
+    Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
+    BadguysStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
+    BadguysActions = session.query(Action).filter_by(enemyid=Badguy.enemyid).all()
+    BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
+    EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,actions=BadguysActions,initiative=Badguy.initiativeScore,enemyId=Badguy.id,combatId=enemyCombatId)
+    return EnemyInstance
 
-# def markTurn(enemy): #need to sort out names of 
-#     session = CreateSession()
-#     x=session.query(Combat).filter_by(enemyName=enemy.enemyName).first()
-#     x.hadTurn =1
-#     session.commit()
+def markTurn(enemy): #need to sort out names of 
+    session = CreateSession()
+    x=session.query(Combat).filter_by(enemyName=enemy.enemyName).first()
+    x.hadTurn =1
+    session.commit()
 
-# def removeEnemy(enemy):
-#     session = CreateSession()
-#     session.query(Combat).filter_by(enemyName=enemy).delete() #possibly better to use id? not sure atm
-#     session.commit()
+def removeEnemy(enemy):
+    session = CreateSession()
+    session.query(Combat).filter_by(enemyName=enemy).delete() #possibly better to use id? not sure atm
+    session.commit()
 
 def getCombatOrder():
     session = CreateSession()
     results = session.query(Combat).order_by(Combat.initiativeScore.desc()).all()
     return results
 
-# def getNextTurn():
-#     session = CreateSession()
-#     results = session.query(Combat).filter(Combat.hadTurn == None).order_by(Combat.initiativeScore.desc()).first()
-#     if not results:
-#         for row in session.query(Combat).all():  # all() is extra
-#             row.hadTurn = None
-#         session.commit()
-#         results = session.query(Combat).filter(Combat.hadTurn == None).order_by(Combat.initiativeScore.desc()).first()
-#     return results #Combat.Row entry
+def getNextTurn():
+    session = CreateSession()
+    results = session.query(Combat).filter(Combat.hadTurn == None).order_by(Combat.initiativeScore.desc()).first()
+    if not results:
+        for row in session.query(Combat).all():  # all() is extra
+            row.hadTurn = None
+        session.commit()
+        results = session.query(Combat).filter(Combat.hadTurn == None).order_by(Combat.initiativeScore.desc()).first()
+    return results #Combat.Row entry
 
-# def updateHP(enemy,hp):
-#     session = CreateSession()
-#     results = session.query(Combat).filter(Combat.enemyName == enemy).first()
-#     results.currentHp = hp
-#     session.commit()
+def updateHP(enemy,hp):
+    session = CreateSession()
+    results = session.query(Combat).filter(Combat.enemyName == enemy).first()
+    results.currentHp = hp
+    session.commit()
 
-# def generateEnemiesList():
-#     session = CreateSession()
-#     results = session.query(Enemy).all()
-#     results.sort(key=lambda x: x.name)
-#     return results
+def generateEnemiesList():
+    session = CreateSession()
+    results = session.query(Enemy).all()
+    results.sort(key=lambda x: x.name)
+    return results
 
-# def generateHeroesList():
-#     session = CreateSession()
-#     results = session.query(Hero).all()
-#     results.sort(key=lambda x: x.name)
-#     return results
+def generateHeroesList():
+    session = CreateSession()
+    results = session.query(Hero).all()
+    results.sort(key=lambda x: x.name)
+    return results
 
 def truncateCombatList():
     session = CreateSession()
@@ -272,3 +291,6 @@ def addToCombatTable(enemy): #need to sort out names of
         session.add(Combat(enemyName=f"{enemy.name}",initiativeScore=enemy.initiative,currentHp=enemy.hp,AC=enemy.AC,maxHp=enemy.hp))
         session.commit()
         session.close()
+
+
+CreateSession()

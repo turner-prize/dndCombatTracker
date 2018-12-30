@@ -3,21 +3,19 @@ from enemies import Enemy
 from flask_sqlalchemy import SQLAlchemy
 import itertools
 import os
-from models import createEnemyInstance,addToCombatTable,truncateCombatList,getCombatOrder,generateEnemiesList
-
+from models import createEnemyInstance,addToCombatTable,truncateCombatList,getCombatOrder,generateEnemiesList,generateHeroesList,referenceEnemyInstanceByName
+from models import referenceEnemyInstance,createHeroInstance,getNextTurn,markTurn
 
 mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
 # db=SQLAlchemy(app)
+
 truncateCombatList()
 
 @app.route('/statBlock')
 def statBlockTest():
-    #x=createEnemyInstance('Adult Red Dragon')
-
-    x = {"name":"Doms a twat", "savingthrows": ["Dex +6", "Con +12","Wis +12"], "immunities":"psychic"}
-
+    x=createEnemyInstance('Adult Red Dragon')
     return render_template('demo-inlined.html',enemy=x)
 
 @app.route('/attack', methods=['POST'])
@@ -30,6 +28,15 @@ def attack():
     text = attacker.Attack(action,target)
     InitiativeOrder=getCombatOrder()
     return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,flavourText=text)
+
+@app.route('/manualDamage', methods=['POST'])
+def manualDamage():
+    attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
+    target = referenceEnemyInstanceByName(request.form['target'])
+    damage = int(request.form['damage'])
+    target.Damage(damage)
+    InitiativeOrder=getCombatOrder()
+    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker)
 
 @app.route('/nextItem')
 def nextItem():
@@ -67,14 +74,14 @@ def index():
     else:
         InitiativeOrder=getCombatOrder()
         if InitiativeOrder: #if there is an initiative order list, it means players and enemies have been added.
-            x=getNextTurn() #returns models.Combat row
+            x=getNextTurn()
             current = referenceEnemyInstance(x) #creates another Enemy class instance with existing data to populate the html
             markTurn(x)
             return render_template('index.html',mylist=InitiativeOrder,nextitem=current)
         else: #if there is no initiative order it's probably the first time you're opening the session
             return render_template('startPage.html')
-if __name__ == '__main__':
-    app.run(debug=True,use_reloader=False) #usereloader added as debug mode causes flask to run twice when loaded.
 
+if __name__ == '__main__':
+    app.run(debug=True) #usereloader added as debug mode causes flask to run twice when loaded.
 
     #https://stackoverflow.com/questions/34009296/using-sqlalchemy-session-from-flask-raises-sqlite-objects-created-in-a-thread-c

@@ -1,6 +1,6 @@
 from diceroll import RollDice
 from actions import Action
-#import models
+import models
 
 class Enemy(object):
     def __init__(self,**enemy):
@@ -9,6 +9,7 @@ class Enemy(object):
         self.type = enemy['type']
         self.alignment = enemy['alignment']
         self.AC = enemy['ac']
+        self.armorType = enemy['armorType']
         self.hp = RollDice(enemy['hp'])
         self.speed = enemy['speed']
         self.STR = enemy['STR']
@@ -22,7 +23,12 @@ class Enemy(object):
         self.alive = True
         self.currentstatus = 'Healthy'
         self.actions = [Action(**i) for i in enemy['actions']]
-        self.enemyId = enemy['id'] 
+        self.enemyId = enemy['id']
+        self.savingThrows = enemy.get('savingThrows',None)
+        self.challenge = enemy['challenge']
+        self.languages= enemy['languages']
+        self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
+        self.actionsText = [ActionsText(**i) for i in enemy['actionsText']]
         
         
     def Attack(self, action, target):
@@ -40,8 +46,9 @@ class Enemy(object):
                 print ('The ' + self.name +  "'s attack misses!")
                 return ('The ' + self.name +  "'s attack misses!")
 
-    def Damage(self,amount):
+    def Damage(self,amount): #need to write damage to db here?
         self.hp = self.hp - amount
+        models.updateHP(self.name,self.hp)
         print (self.name + ' has ' + str(self.hp) + ' hp remaining.')   
  
     def Status (self):
@@ -87,3 +94,14 @@ class InitialisedEnemy(Enemy):
         self.max = self.hp
         self.enemyId = enemyId
         self.combatId = combatId
+
+class SpecialTraits(object):
+    def __init__(self,**st):
+        self.title = st['title']
+        self.description = st['description']
+
+class ActionsText(object):
+    def __init__(self,**st):
+        self.title = st['title']
+        self.actionType = st.get('actionType',None)
+        self.description = st['description']

@@ -286,7 +286,7 @@ function elementClass(contentNode) {
     <top-stats>
       <property-line>
         <h4>Armor Class</h4>
-        <p>{{enemy.AC}} (natural armor* need to add this to the class instance)</p>
+        <p>{{enemy.AC}} ({{enemy.armorType|lower}})</p>
       </property-line>
       <property-line>
         <h4>Max Hit Points</h4>
@@ -303,10 +303,10 @@ function elementClass(contentNode) {
 
       <abilities-block data-cha="{{enemy.CHA}}" data-con="13" data-dex="11" data-int="1" data-str="{{enemy.STR}}" data-wis="3"></abilities-block>
 
-      {% if enemy.savingthrows %}
+      {% if enemy.savingThrows %}
       <property-line>
         <h4>Saving Throws</h4>
-      {% for st in enemy.savingthrows %}
+      {% for st in enemy.savingThrows %}
       {{st}}
       {%- if not loop.last %},{% endif %} <!-- this bit will only put in a comma if its not the end of the loop yet -->
       {% endfor %}
@@ -329,39 +329,36 @@ function elementClass(contentNode) {
         <h4>Senses</h4>
         <p>blindsight 60 ft. (blind beyond this radius), passive Perception 6</p>
       </property-line>
+      {% if enemy.languages %}
       <property-line>
         <h4>Languages</h4>
-        <p>—</p>
+        <p>{{enemy.languages}}</p>
       </property-line>
+      {% endif %}
+      {% if enemy.challenge %}
       <property-line>
         <h4>Challenge</h4>
-        <p>1 (200 XP)</p>
+        <p>{{enemy.challenge}}</p>
       </property-line>
+      {% endif %}
     </top-stats>
 
-    <property-block>
-      <h4>Antimagic Susceptibility.</h4>
-      <p>The armor is incapacitated while in the area of an <i>antimagic
-        field</i>.  If targeted by <i>dispel magic</i>, the armor must succeed
-        on a Constitution saving throw against the caster’s spell save DC or
-        fall unconscious for 1 minute.</p>
-    </property-block>
-    <property-block>
-      <h4>False Appearance.</h4>
-      <p>While the armor remains motionless, it is indistinguishable from a
-        normal suit of armor.</p>
-    </property-block>
+    {% if enemy.specialTraits %}
+      {% for traits in enemy.specialTraits %}
+      <property-block>
+        <h4>{{traits.title}}</h4>
+        <p>{{traits.description}}</p>
+      </property-block>
+      {% endfor %}
+    {% endif %}
 
     <h3>Actions</h3>
 
+    {% for actions in enemy.actionsText %}
     <property-block>
-      <h4>Multiattack.</h4>
-      <p>The armor makes two melee attacks.</p>
+      <h4>{{actions.title}}</h4>
+      <p>{{actions.description}}</p>
     </property-block>
+    {% endfor %}
 
-    <property-block>
-      <h4>Slam.</h4>
-      <p><i>Melee Weapon Attack:</i> +4 to hit, reach 5 ft., one target.
-        <i>Hit:</i> 5 (1d6 + 2) bludgeoning damage.</p>
-    </property-block>
   </stat-block></body></html>
