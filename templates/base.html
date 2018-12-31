@@ -9,7 +9,9 @@
   <script src="{{ url_for('static', filename='js/attack.js') }}"></script>
   <script src="{{ url_for('static', filename='js/damage.js') }}"></script>
 </head>
-<body>
-{% block content %}{% endblock %}
-</body>
+  <body>
+    <div class="page">
+    {% block content %}{% endblock %}
+    </div>
+  </body>
 </html>

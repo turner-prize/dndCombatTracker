@@ -1,41 +1,48 @@
 {% extends "base.html" %}
 {% block content %}
-        <div id="initiativeOrder" class="updateableHTML">
-          <div id="mylist">
-            {% for item in mylist %}
-              {% if item.enemyName == nextitem.name %}
-                <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
-              {% else %}
-                <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
-              {% endif %}
-            {% endfor %}
-          </div>
+<div id="initiativeOrder" class="updateableHTML">
 
-          <div id="actionSelect">
-            <select size=10>
-              {% for w in nextitem.actions %}
-                <option id=nextAction>{{ w.actionName }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
-              {% endfor %}
-            </select>
-          </div>
-
-        <div class="target-selection-container">
-          <div id="selectionList" class="select list">
-            <select size=10>
-              {% for item in mylist %}
-                <option value="{{ item.id }}">{{ item.enemyName }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </div>
-
-
-        <footer>
-          <p><button class="btn nextItem" id="nextButton">Next Item</button>
-          <p><button class="btn attack" id=#currentTurn>attack</button>
-          <p><button class="btn damage" id=#manualDamage>manual damage</button>
-        </footer>
-
-        <div id="fadetest">{{flavourText}}</div>
+    <div class="toprow">
+    <div id="mylist" class="initiativeList">
+      {% for item in mylist %}
+        {% if item.enemyName == nextitem.name %}
+          <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</b></ul>
+        {% else %}
+          <ul id=item>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+  
+    <div class="xselect">
+      <div id="actionSelect" class="aselect">
+        <select size=10>
+          {% for w in nextitem.actions %}
+            <option id=nextAction>{{ w.actionName }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
+          {% endfor %}
+        </select>
       </div>
+  
+      <div class="target-selection-container">
+        <div id="selectionList" class="tselect">
+          <select size=10>
+            {% for item in mylist %}
+              <option value="{{ item.id }}">{{ item.enemyName }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+    </div>
+  
+  
+  
+    <div class="bottom">
+      <p><button class="btn nextItem" id="nextButton">Next Item</button>
+      <p><button class="btn attack" id=#currentTurn>attack</button>
+      <p><button class="btn damage" id=#manualDamage>manual damage</button>
+  
+  
+    <div id="fadetest">{{flavourText}}</div>
+    </div>
+  </div>
 {% endblock %}

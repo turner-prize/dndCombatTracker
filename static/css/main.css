@@ -1,36 +1,44 @@
-#mylist {
-  float: left;
-  padding: 20px;
-  width:20%;
-  background-color: #f1f1f1;
-  height: 100px; /* only for demonstration, should be removed */
+body{
+  display:flex;
+   flex-direction: column;
+   align-items: stretch;
+ }
+ 
+ button{
+  
+   margin-left:12px;
+   margin-right:12px;
+   
+ }
+ 
+ .page {
+  background-color: gray;
+  display:flex;
+  margin: 30px auto 0;
+  align-items: center;
 }
 
-#actionSelect {
-  float: left;
-  padding: 20px;
-  width: 5%;
-  background-color: #f1f1f1;
-  height: 100px; /* only for demonstration, should be removed */
+.updateableHTML {
+  background-color: gray;
 }
-
-#selectionList {
-  float: left;
-  padding: 20px;
-  width: 5%;
-  background-color: #f1f1f1;
-  height: 100px; /* only for demonstration, should be removed */
-}
-
-#nextButton{
-  background-color: #4CAF50;
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-}
+ 
+ .toprow{
+   display: flex;
+   flex: 1;
+  align-items: flex-start;
+ }
+ 
+ .xselect{
+  margin-left:20px;
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  margin-right:12px;
+ }
+ 
+ .bottom{
+  display: flex;
+  flex: 1;
+  align-items:stretch;
+ }
+ 

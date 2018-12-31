@@ -111,9 +111,7 @@ class Action(Base):
     id = Column(Integer, primary_key=True)
     enemyid=Column(Integer, ForeignKey('enemies.id'))
     name = Column(String)
-    type = Column(String)
     attackBonus = Column(String)
-    range = Column(String)
     targetMax = Column(Integer)
     damage = Column(String)
     damageType = Column(String)
@@ -216,7 +214,7 @@ def referenceEnemyInstance(enemyInstance): #this function gets passed a models.C
     session = CreateSession()
     Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first()
     BadguysActions = session.query(Action).filter_by(enemyid=Badguy.id).all()
-    BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
+    BadguysActions = [{'name':i.name,'attackBonus':i.attackBonus,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
     EnemyInstance =enemies.InitialisedEnemy(enemyInstance.enemyName,Badguy.size,Badguy.type,Badguy.alignment,enemyInstance.AC,enemyInstance.currentHp,Badguy.speed,Badguy.STR,Badguy.DEX,Badguy.CON,Badguy.INT,Badguy.WIS,Badguy.CON,actions=BadguysActions,initiative=enemyInstance.initiativeScore,enemyId=Badguy.id,combatId=enemyInstance.id)
     return EnemyInstance
 
@@ -225,7 +223,7 @@ def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a stri
     Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
     BadguysStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
     BadguysActions = session.query(Action).filter_by(enemyid=Badguy.enemyid).all()
-    BadguysActions = [{'name':i.name,'type':i.type,'attackBonus':i.attackBonus,'range':i.range,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
+    BadguysActions = [{'name':i.name,'attackBonus':i.attackBonus,'targetMax':i.targetMax,'damage':i.damage,'damageType':i.damageType} for i in BadguysActions]
     EnemyInstance =enemies.InitialisedEnemy(Badguy.enemyName,BadguysStats.size,BadguysStats.type,BadguysStats.alignment,Badguy.AC,Badguy.currentHp,BadguysStats.speed,BadguysStats.STR,BadguysStats.DEX,BadguysStats.CON,BadguysStats.INT,BadguysStats.WIS,BadguysStats.CON,actions=BadguysActions,initiative=Badguy.initiativeScore,enemyId=Badguy.id,combatId=enemyCombatId)
     return EnemyInstance
 
