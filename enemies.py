@@ -27,6 +27,11 @@ class Enemy(object):
         self.savingThrows = enemy.get('savingThrows',None)
         self.challenge = enemy['challenge']
         self.languages= enemy['languages']
+        self.senses= enemy['senses']
+        self.damage_vulnerabilities= enemy['damage_vulnerabilities']
+        self.damage_resistances= enemy['damage_resistances']
+        self.damage_immunities= enemy['damage_immunities']
+        self.condition_immunities= enemy['condition_immunities']
         self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
         self.actionsText = [ActionsText(**i) for i in enemy['actionsText']]
         
@@ -73,27 +78,37 @@ class Enemy(object):
 
 
 class InitialisedEnemy(Enemy):
-    def __init__(self,name,size,type,alignment,AC,hp,speed,STR,DEX,CON,INT,WIS,CHA,actions,initiative,enemyId, combatId):
-        self.name = name
-        self.size = size
-        self.type = type
-        self.alignment = alignment
-        self.AC = AC
-        self.hp = hp
-        self.speed = speed
-        self.STR = STR
-        self.DEX = DEX
-        self.CON = CON
-        self.INT = INT
-        self.WIS = WIS
-        self.CHA = CHA
-        self.initiative = initiative
+    def __init__(self,**enemy):
+        self.name = enemy['name']
+        self.size = enemy['size']
+        self.type = enemy['type']
+        self.alignment = enemy['alignment']
+        self.AC = enemy['ac']
+        self.armorType = enemy['armorType']
+        self.hp = enemy['hp']
+        self.STR = enemy['STR']
+        self.DEX = enemy['DEX']
+        self.CON = enemy['CON']
+        self.INT = enemy['INT']
+        self.WIS = enemy['WIS']
+        self.CHA = enemy['CHA']
+        self.initiative = enemy['initiative']
         self.alive = True
         self.currentstatus = 'Healthy'
-        self.actions = [Action(**i) for i in actions]
-        self.max = self.hp
-        self.enemyId = enemyId
-        self.combatId = combatId
+        self.actions = [Action(**i) for i in enemy['actions']]
+        self.max = enemy['maxhp']
+        self.enemyId = enemy['enemyId']
+        self.combatId = enemy['combatId']
+        self.savingThrows = enemy.get('savingThrows',None)
+        self.challenge = enemy['challenge']
+        self.languages= enemy['languages']
+        self.senses= enemy['senses']
+        self.damage_vulnerabilities= enemy['damage_vulnerabilities']
+        self.damage_resistances= enemy['damage_resistances']
+        self.damage_immunities= enemy['damage_immunities']
+        self.condition_immunities= enemy['condition_immunities']
+        self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
+        self.actionsText = [ActionsText(**i) for i in enemy['actionsText']]
 
 class SpecialTraits(object):
     def __init__(self,**st):

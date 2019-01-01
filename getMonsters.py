@@ -40,7 +40,11 @@ def enemiesTable(monster,session):
                 CHA = monster.get('charisma',None),
                 challenge = monster['challenge_rating'],
                 senses = monster['senses'],
-                languages = monster['languages'])
+                languages = monster['languages'],
+                damage_vulnerabilities= monster['damage_vulnerabilities'],
+                damage_resistances= monster['damage_resistances'],
+                damage_immunities= monster['damage_immunities'],
+                condition_immunities= monster['condition_immunities'])
 
     session.add(enemy)
 

@@ -15,8 +15,8 @@ truncateCombatList()
 
 @app.route('/statBlock')
 def statBlockTest():
-    x=createEnemyInstance('Blink Dog')
-    return render_template('demo-inlined.html',enemy=x)
+    x=createEnemyInstance('Aboleth')
+    return render_template('demo-two-column-inlined.html',enemy=x)
 
 @app.route('/attack', methods=['POST'])
 def attack():
@@ -27,7 +27,7 @@ def attack():
     target = referenceEnemyInstanceByName(request.form['target'])
     text = attacker.Attack(action,target)
     InitiativeOrder=getCombatOrder()
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,flavourText=text)
+    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,flavourText=text,enemy=attacker)
 
 @app.route('/manualDamage', methods=['POST'])
 def manualDamage():
@@ -36,7 +36,7 @@ def manualDamage():
     damage = int(request.form['damage'])
     target.Damage(damage)
     InitiativeOrder=getCombatOrder()
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker)
+    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,enemy=attacker)
 
 @app.route('/nextItem')
 def nextItem():
@@ -46,7 +46,7 @@ def nextItem():
     #might need to say 'if enemy id is null'
     current = referenceEnemyInstance(x)
     markTurn(x)
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=current)
+    return render_template('section.html',mylist=InitiativeOrder,nextitem=current,enemy=current)
 
 @app.route('/chooseEnemies')
 def chooseEnemies():
@@ -77,7 +77,10 @@ def index():
             x=getNextTurn()
             current = referenceEnemyInstance(x) #creates another Enemy class instance with existing data to populate the html
             markTurn(x)
-            return render_template('index.html',mylist=InitiativeOrder,nextitem=current)
+            for i in InitiativeOrder:
+                print (i.enemyName)
+            print(current.name)
+            return render_template('index.html',mylist=InitiativeOrder,nextitem=current,enemy=current)
         else: #if there is no initiative order it's probably the first time you're opening the session
             return render_template('startPage.html')
 
