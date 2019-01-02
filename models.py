@@ -157,9 +157,8 @@ def CreateDbAndPopulate():
     session.add(Hero(name = 'Bonk',ac = 12,hp = 16))
     session.commit()
 
-def createEnemyInstance(enemyName):
-    session = CreateSession()
-    Badguy = session.query(Enemy).filter_by(name=enemyName).first()
+
+def QueryDB(Badguy):
     Badguy ={k:v for k, v in Badguy.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None}
     BadguysActions = session.query(Action).filter_by(enemyid=Badguy['id']).all()
     BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
@@ -177,7 +176,12 @@ def createEnemyInstance(enemyName):
     actionsText = session.query(ActionsText).filter_by(enemyid=Badguy['id']).all()
     if actionsText:
         Badguy['actionsText'] = [{'title':i.title,'actionType':i.actionType,'description':i.description} for i in actionsText]
+    return Badguy
 
+def createEnemyInstance(enemyName):
+    session = CreateSession()
+    Badguy = session.query(Enemy).filter_by(name=enemyName).first() #returns Enemy.Row instance
+    Badguy=QueryDB(Badguy)
     EnemyInstance =enemies.Enemy(**Badguy)
     session.close()
     return EnemyInstance
@@ -190,25 +194,8 @@ def createHeroInstance(heroName):
 
 def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
     session = CreateSession()
-    Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first()
-    Badguy ={k:v for k, v in Badguy.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None}
-    BadguysActions = session.query(Action).filter_by(enemyid=Badguy['id']).all()
-    BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
-    Badguy['actions'] = BadguysActions
-
-    st = session.query(SavingThrows).filter_by(enemyid=Badguy['id']).first()
-    if st:
-        saving_throws=[f"{k.title()} {v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
-        Badguy['savingThrows'] = saving_throws
-
-    traits = session.query(SpecialTraits).filter_by(enemyid=Badguy['id']).all()
-    if traits:
-        Badguy['specialTraits'] = [{'title':i.title,'description':i.description} for i in traits]
-
-    actionsText = session.query(ActionsText).filter_by(enemyid=Badguy['id']).all()
-    if actionsText:
-        Badguy['actionsText'] = [{'title':i.title,'actionType':i.actionType,'description':i.description} for i in actionsText]
-
+    Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first() #returns Enemy.Row instance
+    Badguy = QueryDB(Badguy)
     Badguy['initiative']=enemyInstance.initiativeScore
     Badguy['combatId']=enemyInstance.id
     Badguy['enemyId']=enemyInstance.enemyid
@@ -222,24 +209,8 @@ def referenceEnemyInstance(enemyInstance): #this function gets passed a models.C
 def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a string passed to it
     session = CreateSession()
     Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
-    BadguyStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first()
-    BadguyStats ={k:v for k, v in BadguyStats.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None}
-    BadguysActions = session.query(Action).filter_by(enemyid=BadguyStats['id']).all()
-    BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
-    BadguyStats['actions'] = BadguysActions
-
-    st = session.query(SavingThrows).filter_by(enemyid=BadguyStats['id']).first()
-    if st:
-        saving_throws=[f"{k.title()} {v}" for k, v in st.__dict__.items() if k != 'id'and k!= '_sa_instance_state'and k!= 'enemyid' and v is not None]
-        BadguyStats['savingThrows'] = saving_throws
-
-    traits = session.query(SpecialTraits).filter_by(enemyid=BadguyStats['id']).all()
-    if traits:
-        BadguyStats['specialTraits'] = [{'title':i.title,'description':i.description} for i in traits]
-
-    actionsText = session.query(ActionsText).filter_by(enemyid=BadguyStats['id']).all()
-    if actionsText:
-        BadguyStats['actionsText'] = [{'title':i.title,'actionType':i.actionType,'description':i.description} for i in actionsText]
+    BadguyStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first() #returns Enemy.Row instance
+    BadguyStats = QueryDB(BadguyStats)
 
     BadguyStats['initiative']=Badguy.initiativeScore
     BadguyStats['combatId']=Badguy.id
