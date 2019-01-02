@@ -20,6 +20,7 @@ def statBlockTest():
 
 @app.route('/attack', methods=['POST'])
 def attack():
+    print(request.form)
     attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
     for i in attacker.actions:
         if i.actionName == request.form['action']:

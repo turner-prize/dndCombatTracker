@@ -5,10 +5,8 @@ body{
  }
  
  button{
-  
    margin-left:12px;
    margin-right:12px;
-   
  }
  
  .page {
@@ -41,4 +39,7 @@ body{
   flex: 1;
   align-items:stretch;
  }
- 
+
+ .tselect{
+  margin-left:50px;
+ }
