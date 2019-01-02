@@ -32,7 +32,8 @@ class Enemy(object):
         self.damage_resistances= enemy['damage_resistances']
         self.damage_immunities= enemy['damage_immunities']
         self.condition_immunities= enemy['condition_immunities']
-        self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
+        if enemy.get('specialTraits',None):
+            self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
         self.actionsText = [ActionsText(**i) for i in enemy['actionsText']]
         
         

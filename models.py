@@ -158,7 +158,7 @@ def CreateDbAndPopulate():
     session.commit()
 
 
-def QueryDB(Badguy):
+def QueryDB(Badguy,session):
     Badguy ={k:v for k, v in Badguy.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None}
     BadguysActions = session.query(Action).filter_by(enemyid=Badguy['id']).all()
     BadguysActions =[{k:v for k, v in i.__dict__.items() if k!= '_sa_instance_state'and k!= 'enemyid' and v is not None} for i in BadguysActions]
@@ -181,7 +181,7 @@ def QueryDB(Badguy):
 def createEnemyInstance(enemyName):
     session = CreateSession()
     Badguy = session.query(Enemy).filter_by(name=enemyName).first() #returns Enemy.Row instance
-    Badguy=QueryDB(Badguy)
+    Badguy=QueryDB(Badguy,session)
     EnemyInstance =enemies.Enemy(**Badguy)
     session.close()
     return EnemyInstance
@@ -195,7 +195,7 @@ def createHeroInstance(heroName):
 def referenceEnemyInstance(enemyInstance): #this function gets passed a models.Combat row object
     session = CreateSession()
     Badguy = session.query(Enemy).filter_by(id=enemyInstance.enemyid).first() #returns Enemy.Row instance
-    Badguy = QueryDB(Badguy)
+    Badguy = QueryDB(Badguy,session)
     Badguy['initiative']=enemyInstance.initiativeScore
     Badguy['combatId']=enemyInstance.id
     Badguy['enemyId']=enemyInstance.enemyid
@@ -210,7 +210,7 @@ def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a stri
     session = CreateSession()
     Badguy = session.query(Combat).filter_by(id=enemyCombatId).first()
     BadguyStats = session.query(Enemy).filter_by(id=Badguy.enemyid).first() #returns Enemy.Row instance
-    BadguyStats = QueryDB(BadguyStats)
+    BadguyStats = QueryDB(BadguyStats,session)
 
     BadguyStats['initiative']=Badguy.initiativeScore
     BadguyStats['combatId']=Badguy.id
