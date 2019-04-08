@@ -5,13 +5,40 @@ import itertools
 import os
 from models import createEnemyInstance,addToCombatTable,truncateCombatList,getCombatOrder,generateEnemiesList,generateHeroesList,referenceEnemyInstanceByName
 from models import referenceEnemyInstance,createHeroInstance,getNextTurn,markTurn
+from modelsInventory import updateInventory, getInventory, removeInventoryItem
 
 mydir=os.path.dirname(os.path.abspath(__file__))
 app = Flask(__name__)
+
 # app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(mydir,'combatTracker.db')}"
 # db=SQLAlchemy(app)
+#truncateCombatList()
 
-truncateCombatList()
+@app.route('/reset')
+def reset():
+    truncateCombatList()
+    return render_template('startPage.html')
+    
+@app.route('/inventory')
+def inventory():
+    itemList = getInventory()
+    return render_template('inventory.html',itemList = itemList)
+    
+@app.route('/inventory/add', methods=['POST'])
+def inventoryAdd():
+    itemName = request.form['item']
+    quantity = request.form['quantity']
+    updateInventory(itemName,quantity)
+    itemList = getInventory()
+    return render_template('inventory.html',itemList = itemList)
+    
+@app.route('/inventory/remove', methods=['POST'])
+def inventoryRemove():
+    itemName = request.form['item']
+    quantity = request.form['quantity']
+    removeInventoryItem(itemName,quantity)
+    itemList = getInventory()
+    return render_template('inventory.html',itemList = itemList)
 
 @app.route('/statBlock')
 def statBlockTest():
@@ -20,7 +47,6 @@ def statBlockTest():
 
 @app.route('/attack', methods=['POST'])
 def attack():
-    print(request.form)
     attacker = referenceEnemyInstanceByName(request.form['attacker[name]'])
     for i in attacker.actions:
         if i.actionName == request.form['action']:
@@ -28,7 +54,7 @@ def attack():
     target = referenceEnemyInstanceByName(request.form['target'])
     text = attacker.Attack(action,target)
     InitiativeOrder=getCombatOrder()
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,flavourText=text,enemy=attacker)
+    return render_template('index.html',mylist=InitiativeOrder,nextitem=attacker,text=text)
 
 @app.route('/manualDamage', methods=['POST'])
 def manualDamage():
@@ -37,17 +63,15 @@ def manualDamage():
     damage = int(request.form['damage'])
     target.Damage(damage)
     InitiativeOrder=getCombatOrder()
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=attacker,enemy=attacker)
+    return render_template('index.html',mylist=InitiativeOrder,nextitem=attacker,enemy=attacker)
 
 @app.route('/nextItem')
 def nextItem():
     InitiativeOrder=getCombatOrder()
     x=getNextTurn()
-    #error cropping up here, probs because its trying to referemce an enemy instance which has no enemy id.
-    #might need to say 'if enemy id is null'
     current = referenceEnemyInstance(x)
     markTurn(x)
-    return render_template('section.html',mylist=InitiativeOrder,nextitem=current,enemy=current)
+    return render_template('index.html',mylist=InitiativeOrder,nextitem=current,enemy=current)
 
 @app.route('/chooseEnemies')
 def chooseEnemies():
@@ -78,14 +102,11 @@ def index():
             x=getNextTurn()
             current = referenceEnemyInstance(x) #creates another Enemy class instance with existing data to populate the html
             markTurn(x)
-            for i in InitiativeOrder:
-                print (i.enemyName)
-            print(current.name)
             return render_template('index.html',mylist=InitiativeOrder,nextitem=current,enemy=current)
         else: #if there is no initiative order it's probably the first time you're opening the session
             return render_template('startPage.html')
 
 if __name__ == '__main__':
-    app.run(debug=True) #usereloader added as debug mode causes flask to run twice when loaded.
+    app.run(use_reloader=True) #usereloader added as debug mode causes flask to run twice when loaded.
 
     #https://stackoverflow.com/questions/34009296/using-sqlalchemy-session-from-flask-raises-sqlite-objects-created-in-a-thread-c

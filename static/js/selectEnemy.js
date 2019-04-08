@@ -28,7 +28,7 @@ jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
   };
 
 $(function() {
-    $('#select').filterByText($('#textbox'), false);
+    $('#select').filterByText($('#enemySearch'), false);
 });
 
 $(function() {

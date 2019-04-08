@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="inventoryPage">
+
+<div id="mySidebar" class="sidebar">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+      <a href={{ url_for('reset') }}>Reset Combat</a>
+</div>
+
+<div id="main">
+    <button class="openbtn" onclick="openNav()">☰</button>  
+</div>
+
+<div class = "inventoryMain">
+<table id="inventoryTable" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in itemList %}
+    <tr>
+      <td class="iName">{{ item.0}}</td>
+      <td class="iQuant">{{ item.1}}</td>
+    </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+    <div class="inventoryButtons">
+        <p><button type = "button" class="btn btn-dark" id="removeItem">Remove Item</button>
+        <p><button type = "button" class="btn btn-dark" id="removeItemQuantity">Remove Quantity of Item</button>
+        <p><button type = "button" class="btn btn-dark" id="assignItemToPlayer">Assign Item to Player*</button>
+    </div>
+</div>
+  
+<div class="inventoryAdd">
+  <form id="addItem" action="{{ url_for('inventoryAdd') }}" method="post">
+  <p><input type="text" id="xitem" placeholder="Enter Item Name" /></p>
+  <p><input type="text" id="xquantity" placeholder="Enter Item Quantity" /></p>
+  <p><button type = "button" class="btn btn-dark" id="submitAddItemForm">Add Item To Inventory</button></p>
+  </form>
+</div>
+
+</div>
+
+{% endblock %}

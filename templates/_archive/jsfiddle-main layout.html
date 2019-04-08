@@ -1,0 +1,70 @@
+<body>
+    <div class="thebox">
+    <div class="toprow">
+        <div id="mylist" class="initiativeList">
+            <ul id="currentTurn" data-name="{{nextitem.combatId}}"><b>Hero - 12hp - initiative: 6</b></ul>
+            <ul id=item>Enemy - 12hp - initiative: 7</ul>
+        </div>
+        <div id="actionSelect" class="aselect">
+            <select size=10>
+            <option id=nextAction>ACtions</option> 
+            </select>
+        </div>
+        <div class="target-selection-container">
+            <div id="selectionList" class="tselect">
+                <select size=10>
+                <option value="{{ item.id }}">item</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bottomrow">
+      <p><button class="btn nextItem" id="nextButton">Next Item</button>
+      <p><button class="btn attack" id=#currentTurn>attack</button>
+      <p><button class="btn damage" id=#manualDamage>manual damage</button>
+  
+  
+    <div id="fadetest">{{flavourText}}</div>
+    </div>
+    
+    </div>
+</body>
+
+
+  body {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  flex-direction: column;
+}
+  
+ .thebox{
+  background-color: #c18755;
+  display: flex;
+  flex-direction:column;
+  justify-content:space-around;
+  border-radius: 25px;
+  width:500px
+}
+  
+.toprow{
+  display: flex;
+  flex-direction:row;
+  justify-content:space-around;
+  border-radius: 25px;
+  width:500px
+}
+
+.bottomrow{
+  display: flex;
+  flex-direction:row;
+  justify-content:space-around;
+  border-radius: 25px;
+  width:500px
+}

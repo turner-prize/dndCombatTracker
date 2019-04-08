@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div id="initiativeOrder" class="updateableHTML">
+
+<div class="textrow" id="TextRow">
+<div id="fadeTest">{% if text is defined %}{{text}}{% endif %}</div>
+</div>
+
+    <div class="thebox">
+
+    <div class="toprow" id="TopRow">
+        <div id="mylist" class="initiativeList">
+          {% for item in mylist %}
+            {% if item.enemyName == nextitem.name %}
+              <ul id="currentTurn" data-name="{{nextitem.combatId}}" data-bloodied=_{{nextitem.bloodied}}>{{ nextitem.name }} - {{nextitem.hp}}hp - initiative: {{nextitem.initiative}}</ul>
+            {% else %}
+              <ul id="item" data-bloodied=_{{item.bloodied}}>{{ item.enemyName }} - {{item.currentHp}}hp - initiative: {{item.initiativeScore}}</ul>
+            {% endif %}
+          {% endfor %}
+        </div>
+      
+          <div id="actionSelect">
+            <select class="form-control" size=10>
+              {% for w in nextitem.actions %}
+                <option id=nextAction>{{ w.actionName }}</option> <!-- changed id from nextitem to nextWeapon to avoid conflict -->
+              {% endfor %}
+            </select>
+          </div>
+          <div id="targetSelect">
+              <select class="form-control" size=10>
+                {% for item in mylist %}
+                  <option value="{{ item.id }}">{{ item.enemyName }}</option>
+                {% endfor %}
+              </select>
+          </div>
+    </div>
+  
+  
+  
+        <div class="bottomrow">
+          <p><button type = "button" class="btn btn-dark" id="nextButton">Next Item</button>
+          <p><button type = "button" class="btn btn-dark" id="attackButton">attack</button>
+          <p><button type = "button" class="btn btn-dark" id="manualDamage">manual damage</button>
+        </div>
+        
+    </div>
+  </div> 
+
+
+{% endblock %}

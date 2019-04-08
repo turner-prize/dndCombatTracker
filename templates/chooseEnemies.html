@@ -6,42 +6,81 @@
   <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
   <script src="{{ url_for('static', filename='js/selectEnemy.js') }}"></script>
   <script src="{{ url_for('static', filename='js/postEnemy.js') }}"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <style>
+  body {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #7a7979;
+  flex-direction: column;
+}
+#mainDiv {
+    background-color: #c18755;
+    display: flex;
+    align-items:center;
+    flex-direction:column;
+    justify-content:space-between;
+    border-radius: 25px;
+    margin: 50px
+  }
+  
+  #enemySearch{
+      margin: 10px
+  }
+  
+  #addMargin{
+    margin: 10px
+  }
+  
+  #enemySelect{
+    flex-shrink: 3
+  }
+  
+  </style>
 </head>
 
-    <body>
-      <script type=text/javascript>
+<body>
+        <script type=text/javascript>
           $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
       </script>
-      
-    <input id="textbox" type="text" />
+    <div id="mainDiv">
+    
+    <input id="enemySearch" type="text" />
     <p>
-    <div id="enemySelect">
+      <div id="enemySelect">
         <select id="select" size=15>
             {% for enemy in enemieslist %}
                 <option value="{{ enemy.name }}">{{ enemy.name }}</option>
             {% endfor %}
         </select>
-    </div>
-    <p><button type="sumbit" class="btn addEnemy" id=#addEnemy>Add Enemy</button>
-    <p>
-    <p>
-    <p>
-    <input id="herotextbox" type="text" />
-    <p>
-    <div id="heroSelect">
-        <select id="selecta" size=5>
+      </div>
+      <p><button type="sumbit" class="btn addEnemy btn-dark" id=#addEnemy>Add Enemy</button>
+        <p>
+          <p>
+            <p>
+              <input id="herotextbox" type="text" />
+              <p>
+                <div id="heroSelect">
+                  <select id="selecta" size=5>
             {% for hero in heroeslist %}
                 <option value="{{ hero.name }}">{{ hero.name }}</option>
             {% endfor %}
         </select>
-    </div>
-    <p><button type="sumbit" class="btn addHero" id=#addHero>Add Hero</button>
-    <p><button type="sumbit" class="btn addAllHeroes" id=#addAllHeroes>Add All Heroes</button>
-    <p>
-    <form action="{{ url_for('index') }}">
-        <button type="submit" class="btn return" id=#returnToIndex>Return to Combat</button>
-    </form>
+                </div>
+                <p><button type="sumbit" class="btn addHero btn-dark" id=#addHero>Add Hero</button>
+                  <p><button type="sumbit" class="btn addAllHeroes btn-dark" id=#addAllHeroes>Add All Heroes</button>
+                    <p>
+                    <div id="addMargin">
+                      <form action="{{ url_for('index') }}">
+                        <button type="submit" class="btn return btn-lg btn-dark" id=#returnToIndex>Return to Combat</button>
+                      </form>
+                     </div>
+</div>
 
-
-    </body>
+  </body>
 </html>

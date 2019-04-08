@@ -1,24 +1,24 @@
-$(document).ready(function() {
+$('#attackButton').on('click', function() {
 
-    $(document).on('click','.attack', function() {
+    //var attacker = $(this).attr('attacker');
+    
+    var attacker = $('#currentTurn').data();
+    var action = $('#actionSelect option:selected').val();
+    var target = $('#targetSelect option:selected').val();
+    var URL ="/attack"
 
-        //var attacker = $(this).attr('attacker');
-        
-        var attacker = $('#currentTurn').data();
-        var action = $('#actionSelect option:selected').val();
-        var target = $('#selectionList option:selected').val();
-        var URL ="/attack"
+    req = $.ajax({
+        url : URL,
+        type : 'POST',
+        data : { attacker : attacker, action : action, target : target }
+    });
 
-        req = $.ajax({
-            url : URL,
-            type : 'POST',
-            data : { attacker : attacker, action : action, target : target }
-        });
-
-        req.done(function(data) {
-
-            $('#initiativeOrder').html(data);
-            $("#fadetest").text(data.flavourText).fadeOut(3000);
-        });
+    req.done(function(data) {
+        $('#initiativeOrder').html(data);
+        $('#fadeTest').fadeOut(5000);
     });
 });
+
+
+//https://stackoverflow.com/questions/27917471/pass-parameter-with-python-flask-in-external-javascript
+//https://stackoverflow.com/questions/11178426/how-can-i-pass-data-from-flask-to-javascript-in-a-template

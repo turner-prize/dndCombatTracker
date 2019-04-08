@@ -145,6 +145,7 @@ class Combat(Base):
     maxHp = Column(Integer)
     AC = Column(Integer)
     hadTurn= Column(Integer)
+    bloodied= Column(Integer)
 
     def __repr__(self):
         return self.enemyName
@@ -202,6 +203,7 @@ def referenceEnemyInstance(enemyInstance): #this function gets passed a models.C
     Badguy['name']=enemyInstance.enemyName
     Badguy['hp']=enemyInstance.currentHp
     Badguy['maxhp']=enemyInstance.maxHp
+    Badguy['bloodied']=enemyInstance.bloodied
 
     EnemyInstance =enemies.InitialisedEnemy(**Badguy)
     return EnemyInstance
@@ -218,6 +220,7 @@ def referenceEnemyInstanceByName(enemyCombatId): #this function just gets a stri
     BadguyStats['name']=Badguy.enemyName
     BadguyStats['hp']=Badguy.currentHp
     BadguyStats['maxhp']=Badguy.maxHp
+    BadguyStats['bloodied']=Badguy.bloodied
 
     EnemyInstance =enemies.InitialisedEnemy(**BadguyStats)
     return EnemyInstance
@@ -252,6 +255,8 @@ def updateHP(enemy,hp):
     session = CreateSession()
     results = session.query(Combat).filter(Combat.enemyName == enemy).first()
     results.currentHp = hp
+    if results.currentHp < (results.maxHp / 2):
+        results.bloodied = 1
     session.commit()
 
 def generateEnemiesList():

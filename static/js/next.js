@@ -1,7 +1,6 @@
-$(document).ready(function() {
-    $(document).on('click','.nextItem', function(){        
-        $.get( "/nextItem", function( data ) {            
-            $('#initiativeOrder').html(data);        
+  $('#nextButton').on('click', function(){
+    $.get( "/nextItem", function( data ) { 
+        $("#initiativeOrder").html(data);
         });    
     });
-});
+    

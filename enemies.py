@@ -104,11 +104,13 @@ class InitialisedEnemy(Enemy):
         self.challenge = enemy['challenge']
         self.languages= enemy['languages']
         self.senses= enemy['senses']
+        self.bloodied= enemy['bloodied']
         self.damage_vulnerabilities= enemy['damage_vulnerabilities']
         self.damage_resistances= enemy['damage_resistances']
         self.damage_immunities= enemy['damage_immunities']
         self.condition_immunities= enemy['condition_immunities']
-        self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
+        if enemy.get('specialTraits',None):
+            self.specialTraits = [SpecialTraits(**i) for i in enemy['specialTraits']]
         self.actionsText = [ActionsText(**i) for i in enemy['actionsText']]
 
 class SpecialTraits(object):

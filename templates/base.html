@@ -2,16 +2,44 @@
 <html lang="en">
 <head>
   <title>Combat Tracker v0.1</title>
-  <!-- <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
-  <link rel="stylesheet" href="{{url_for('static',filename='css/main.css')}}">
-  <script type=text/javascript src="{{url_for('static', filename='js/jquery.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/next.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/attack.js') }}"></script>
-  <script src="{{ url_for('static', filename='js/damage.js') }}"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
 </head>
+
+
   <body>
-    <div class="page">
+
     {% block content %}{% endblock %}
-    </div>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/damage.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/attack.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/next.js') }}"></script>
+      <script type="text/javascript" src="{{ url_for('static', filename='js/inventory.js') }}"></script>
+  
+      <script>
+    function openNav() {
+      if (document.getElementById("mySidebar").style.width == "250px"){
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("main").style.marginLeft= "0";
+      }else{
+      document.getElementById("mySidebar").style.width = "250px";
+      document.getElementById("main").style.marginLeft = "250px";
+        }
+     }
+
+    function closeNav() {
+      document.getElementById("mySidebar").style.width = "0";
+      document.getElementById("main").style.marginLeft= "0";
+    }
+    
+    
+
+    
+    
+    
+    </script>
+   
   </body>
+  
+
 </html>

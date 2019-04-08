@@ -1,45 +1,183 @@
-body{
-  display:flex;
-   flex-direction: column;
-   align-items: stretch;
- }
- 
- button{
-   margin-left:12px;
-   margin-right:12px;
- }
- 
- .page {
-  background-color: gray;
-  display:flex;
-  margin: 30px auto 0;
+
+
+  body {
+  overflow: hidden;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d3d3d3;
+  flex-direction: column;
+}
+
+/*c36cff*/
+
+ .thebox {
+  background-color: #c18755;
+  width: 1000px;
+  border-radius: 25px;
+}
+
+.textrow{
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items:center;    
+}
+
+#currentTurn{
+    font-weight: bold;
+}
+
+[data-bloodied=_1]{
+    color: #F73434;
+}
+
+.toprow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: 25px;
+}
+
+.bottomrow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-radius: 25px;
+}
+
+.initiativeList {
+  margin: 30px;
+  align-self: stretch;
+}
+
+
+#actionSelect {
+  margin: 10px;
+  align-self: stretch;
+}
+
+#targetSelect {
+  margin: 10px;
+  padding-bottom: 10px;
+  align-self: stretch;
+}
+
+.form-control select{
+    min-width: 200px;
+}
+
+/*sidebar bits taken from https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_collapse_sidebar*/
+
+.sidebar {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.openbtn {
+  font-size: 20px;
+  cursor: pointer;
+  background-color: #111;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+}
+
+.openbtn:hover {
+  background-color: #444;
+}
+
+#main {
+  transition: margin-left .5s;
+  padding: 16px;
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+}
+
+/*inventory*/
+
+
+.inventoryMain{
+  display: flex;
   align-items: center;
 }
-
-.updateableHTML {
-  background-color: gray;
+.inventoryButtons{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+    
 }
- 
- .toprow{
-   display: flex;
-   flex: 1;
-  align-items: flex-start;
- }
- 
- .xselect{
-  margin-left:20px;
-  display: flex;
-  flex: 1;
-  align-items: stretch;
-  margin-right:12px;
- }
- 
- .bottom{
-  display: flex;
-  flex: 1;
-  align-items:stretch;
- }
 
- .tselect{
-  margin-left:50px;
- }
+#inventoryTable{
+  width: 300px;
+  height: 500px
+  overflow-y:auto;
+  border-style: solid;
+
+}
+
+.selected {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+#inventoryTable tr:hover
+{
+  cursor:pointer;
+  /* add gradient */
+  background-color: #808080;
+  background: -webkit-gradient(linear, left top, left bottom, from(#606060), to(#909090));
+  background: -moz-linear-gradient(top, #606060, #909090);
+  color: #dadada;
+}
+
+.inventoryAdd {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-style: solid;
+  padding: 20px;
+}
+
+.inventoryAdd input {
+  width: 100%;
+  clear: both;
+}
